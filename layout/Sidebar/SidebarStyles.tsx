@@ -12,8 +12,6 @@ export const Container = styled.nav`
   height: 100%;
 
   transition: 0.7s ease-in-out;
-  opacity: ${({ isOpen }) => (isOpen ? '100%' : '0')};
-  right: ${({ isOpen }) => (isOpen ? '0' : '100%')};
 `
 export const Wrapper = styled.div`
   width: 100%;
