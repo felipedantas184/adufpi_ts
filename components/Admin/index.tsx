@@ -6,7 +6,6 @@ import { arrayRemove, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import fireDB from "@/firebase/initFirebase";
 
 import { DatePicker } from 'antd'
-const { RangePicker } = DatePicker;
 import locale from 'antd/lib/date-picker/locale/pt_BR';
 import moment from 'moment';
 
@@ -84,13 +83,26 @@ const Admin = ({ bookings, rooms, users }: any) => {
       alert(error)
     }
   }
+  const getTotalAmount = () => {
+    const filteredMonth = bookings.filter((item:any) => item.from.slice(3, 10) == selectedMonth)
+    const value = filteredMonth.reduce((prev:any, curr:any) => prev + curr.amount, 0)
+
+    return value
+  }
+
+  const getTotalPaidAmount = () => {
+    const filteredMonth = bookings.filter((item:any) => item.from.slice(3, 10) == selectedMonth && item.status == 'Pago')
+    const value = filteredMonth.reduce((prev:any, curr:any) => prev + curr.amount, 0)
+
+    return value
+  }
 
   return (
     <Container>
       <Wrapper>
         <Heading>
-          <Title>{selectedMonth}</Title>
-          <Subtitle></Subtitle>
+          <Title>Administração</Title>
+          <Subtitle>Você está vendo as reservas referentes a {selectedMonth}</Subtitle>
           <DatePicker picker="month" inputReadOnly={true} format="MM-YYYY" locale={locale} allowClear={false} onChange={onChange} />
         </Heading>
         <TableWrapper>
@@ -131,9 +143,9 @@ const Admin = ({ bookings, rooms, users }: any) => {
               <HeaderItem>Valor Total Esperado</HeaderItem>
             </TableHeader>
             <TableRow>
-              <TableItem>{/**{sortedBookings.filter((item) => item.from.slice(3, 10) == selectedMonth).length}*/}</TableItem>
-              <TableItem>{/**{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(getTotalPaidAmount(selectedMonth))}*/}</TableItem>
-              <TableItem>{/**{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(getTotalAmount(selectedMonth))}*/}</TableItem>
+              <TableItem>{bookings.sort(byDate).filter((item:any) => item.from.slice(3, 10) == selectedMonth).length}</TableItem>
+              <TableItem>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(getTotalPaidAmount())}</TableItem>
+              <TableItem>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(getTotalAmount())}</TableItem>
             </TableRow>
           </Table>
         </TableWrapper>

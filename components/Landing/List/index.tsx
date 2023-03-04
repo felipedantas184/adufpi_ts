@@ -20,8 +20,7 @@ const List = ({availableRooms, totaldays, filterByDate, fromdate, todate}:any) =
       pathname: `/checkout/${room.id}`,
       query: {
         from: fromdate,
-        to: todate,
-        totaldays: totaldays
+        to: todate
       }
     }, /**`/checkout/${room.id}`*/)
   }
@@ -30,7 +29,7 @@ const List = ({availableRooms, totaldays, filterByDate, fromdate, todate}:any) =
     <Container>
       <Wrapper>
         <Heading>
-          <Title>Apartamentos ADUFPI {fromdate} {todate} </Title>
+          <Title>Apartamentos ADUFPI</Title>
           <Subtitle>Selecione as datas da hospedagem</Subtitle>
           <RangePicker format="DD-MM-YYYY" inputReadOnly={true} onChange={filterByDate} locale={locale} allowClear={false} disabledDate={disabledDate} />
         </Heading>

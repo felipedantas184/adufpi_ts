@@ -5,11 +5,17 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { BData, Boxes, BResume, Button, CBox, CLabel, CName, Container, Cost, CTitle, HBox, Heading, ImgWrap, Info, Title, Wrapper } from "./CheckoutStyles";
 import { sendContactForm } from "../../lib/api";
+import moment from "moment";
 
 const Checkout = ({ room, roomId }:any) => {
   const { user } = useAuth();
   const router = useRouter();
-  const { from, to, totaldays } = router.query;
+  const { from, to } = router.query;
+
+  var totaldays = moment.duration(moment(to, 'DD-MM-YYYY').diff(moment(from, 'DD-MM-YYYY'))).asDays()
+  if (totaldays == 0) {
+    totaldays = 1
+  }
 
   async function adddata() {
     try {
@@ -19,7 +25,7 @@ const Checkout = ({ room, roomId }:any) => {
         to: to,
         roomId: roomId,
         bookingdate: 'now',
-        amount: room.price,
+        amount: room.price*totaldays,
         payment: 'Pendente',
         status: 'Pendente'
       }).then(function (docRef) {
@@ -91,7 +97,7 @@ const Checkout = ({ room, roomId }:any) => {
                 <CLabel style={{alignSelf: 'flex-end', fontWeight: 600}}>Valor</CLabel>
                 <CBox>
                   <CName style={{textAlign: 'right'}}>{totaldays} Diárias</CName>
-                  <CName style={{textAlign: 'right', fontWeight: 600}}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}</CName>
+                  <CName style={{textAlign: 'right', fontWeight: 600}}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price*totaldays)}</CName>
                 </CBox>
               </HBox>
               <Button onClick={() => adddata()}>Confirmar Reserva</Button>

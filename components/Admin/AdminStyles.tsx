@@ -4,6 +4,7 @@ export const Container = styled.section`
   background-color: #FFF;
   font-family: 'Poppins', sans-serif;
   padding: 24px 0;
+  min-height: 81vh;
 `
 export const Wrapper = styled.div`
   max-width: 1080px;

@@ -8,9 +8,6 @@ const noAuthRequired = ['/login', '/signup', '/reset-password']
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  
-  const { user } = useAuth()
-  console.log(user)
 
   return (
     <AuthContextProvider>

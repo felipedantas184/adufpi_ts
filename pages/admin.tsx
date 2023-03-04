@@ -57,16 +57,16 @@ const AdminPage = ({ bookings, rooms, users }:any) => {
   const adminPrivilege = userData[0].admin
 
   useEffect(() => {
-    console.log(adminPrivilege)
     if (!adminPrivilege) {
       router.push('/')
     }
   }, [adminPrivilege, router])
 
-
   return ( 
     <Layout>
+      {(adminPrivilege) && (
       <Admin bookings={bookings} rooms={rooms} users={users} />
+      )}
     </Layout>
    );
 }
