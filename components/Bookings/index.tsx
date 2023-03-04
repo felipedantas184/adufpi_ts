@@ -2,9 +2,10 @@ import Image from "next/image";
 import { Button, Card, Cards, CFooter, CLabel, Container, CResume, CTitle, Details, DText, FText, Group, Heading, ImgWrap, Info, Subtitle, Text, Title, Wrapper } from "./BookignsStyles";
 import { FiUsers } from 'react-icons/fi'
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { arrayRemove, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import fireDB from "@/firebase/initFirebase";
 import { useAuth } from "@/context/AuthContext";
+import moment from "moment";
 
 const Bookings = ({ rooms }: any) => {
   const { user } = useAuth();
@@ -55,6 +56,31 @@ const Bookings = ({ rooms }: any) => {
     return new Date(a.from.split('-').reverse().join()).valueOf() - new Date(b.from.split('-').reverse().join()).valueOf(); //timestamps
   }
 
+
+  async function deleteData(bookingId:string, roomId:string, bookingFrom:string, bookingTo:string, bookingAmount:number, bookingUserId:string) {
+    try {
+      if (confirm("Você tem certeza de que deseja cancelar esta reserva?") == true) {
+        if (moment.duration((moment(bookingFrom, 'DD-MM-YYYY').diff(moment(moment().utcOffset('-03:00').format('DD-MM-YYYY'), 'DD-MM-YYYY')))).asDays() > 0) {
+          await deleteDoc(doc(fireDB, "bookings", bookingId)).then(function() {
+            updateDoc(doc(fireDB, "rooms", roomId), {
+              currentBookings: arrayRemove({
+                bookingId: bookingId,
+                fromdate: bookingFrom,
+                todate: bookingTo
+              })
+            })
+          })
+          alert("Reserva cancelada!")
+          location.reload()
+        } else {
+          alert('Não é possível cancelar reservas passadas.')
+        }
+      }
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   
   return (
     <Container>
@@ -94,7 +120,7 @@ const Bookings = ({ rooms }: any) => {
                 </Text>
                 <CFooter>
                   <FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(booking.amount)}</FText>
-                  <Button>Cancelar Reserva</Button>
+                  <Button onClick={() => deleteData(booking.id, booking.roomId, booking.from, booking.to, booking.amount, booking.userId)}>Cancelar Reserva</Button>
                 </CFooter>
               </Card>
             ))}

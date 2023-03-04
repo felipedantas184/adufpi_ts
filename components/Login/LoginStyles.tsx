@@ -94,6 +94,7 @@ export const FButton = styled.button`
 
   transition: 0.5s;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover, &:focus {
     box-shadow: inset 200px 0 0 0 #13131A;

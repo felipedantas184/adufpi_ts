@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Container, Item, IWrap, Logo, Logout, Menu, Mobile, Wrapper } from "./NavbarStyles";
 import { FaBars, FaBook, FaHome, FaSignOutAlt, FaUser } from 'react-icons/fa';
 
-const Navbar = () => {
+const Navbar = ({toggle}:any) => {
   const { logout } = useAuth()
 	const router = useRouter()
 
@@ -21,7 +21,7 @@ const Navbar = () => {
 						router.push('/login')
 					}}><Logout><FaSignOutAlt color="#44444A" /><>Logout</></Logout></IWrap>
         </Menu>
-        <Mobile>
+        <Mobile onClick={toggle}>
           <FaBars color="#EB5757" />
         </Mobile>
       </Wrapper>

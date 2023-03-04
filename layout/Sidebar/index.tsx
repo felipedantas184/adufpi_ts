@@ -1,19 +1,34 @@
-import { Close, Container, Item, Logo, Menu, Wrapper } from "./SidebarStyles";
+import { useAuth } from "@/context/AuthContext";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { FaTimes } from "react-icons/fa";
+import { BWrap, Close, Container, Item, Logo, Menu, SButton, Wrapper } from "./SidebarStyles";
 
-const Sidebar = () => {
-  return ( 
-    <Container>
+const Sidebar = ({ isOpen, toggle }:any) => {
+  const { logout } = useAuth()
+	const router = useRouter()
+
+  
+  return (
+    <Container isOpen={isOpen}>
       <Wrapper>
-        <Close></Close>
-        <Logo></Logo>
+        <Close onClick={toggle}>
+          <FaTimes color="#13131A" />
+        </Close>
+        <Logo href={'/'} ><Image src={'/images/black_logo.png'} alt='ADUFPI Logo' fill /></Logo>
         <Menu>
-          <Item>Principal</Item>
-          <Item>Principal</Item>
-          <Item>Principal</Item>
+          <Item><Link href={'/'}>Quartos</Link></Item>
+          <Item><Link href={'/bookings'}>Minhas Reserva</Link>s</Item>
+          <Item><Link href={'/profile'}>Meu Perfil</Link></Item>
         </Menu>
+        <SButton onClick={() => {
+						logout()
+						router.push('/login')
+					}} >Logout</SButton>
       </Wrapper>
     </Container>
-   );
+  );
 }
- 
-export default Sidebar ;
+
+export default Sidebar;

@@ -30,7 +30,7 @@ const List = ({availableRooms}: any) => {
             <ImgWrap><Image src={room.imageurl} alt={room.title} fill /></ImgWrap>
             <Text>
               <Details>
-                <DText>Diária:</DText>
+                <DText>Diária: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}</DText>
                 <DText>{room.capacity}<FiUsers size={14} color={'#EB5757'} /></DText>
               </Details>
               <CTitle>{room.title}</CTitle>

@@ -38,8 +38,8 @@ const Checkout = ({ room, roomId }:any) => {
     <Container>
       <Wrapper>
         <Heading>
-          <Title></Title>
-          <Cost></Cost>
+          <Title>{room.title}</Title>
+          <Cost>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}/diária</Cost>
         </Heading>
         <Info>
           <ImgWrap><Image src={'/images/banner.png'} alt="Room" fill /></ImgWrap>
@@ -86,7 +86,7 @@ const Checkout = ({ room, roomId }:any) => {
               <Button onClick={() => adddata()}>Confirmar Reserva</Button>
             </BResume>
           </Boxes>
-          <CName>Resume about the room and a bunch of features of each room. Resume about the room and a bunch of features of each room. Resume about the room and a bunch of features of each room</CName>
+          <CName>{room.description}</CName>
           <CName>Resume about the room and a bunch of features of each room.</CName>
         </Info>
       </Wrapper>

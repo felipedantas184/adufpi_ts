@@ -121,7 +121,8 @@ export const Button = styled.button`
   
   cursor: pointer;
   transition: 0.5s;
-  
+  -webkit-tap-highlight-color: transparent;
+
   &:hover, &:focus {
     box-shadow: inset 200px 0 0 0 #13131A;
   }

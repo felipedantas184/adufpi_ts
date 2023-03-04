@@ -1,8 +1,79 @@
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaSave } from "react-icons/fa";
 import { MdOutlineCancel } from 'react-icons/md'
 import { Container, HeaderItem, HeaderItemSmall, Heading, Subtitle, Table, TableHeader, TableItem, TableItemSmall, TableRow, TableWrapper, Title, Wrapper } from "./AdminStyles";
+import { useState } from "react";
+import { arrayRemove, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import fireDB from "@/firebase/initFirebase";
 
-const Admin = () => {
+const Admin = ({ bookings, rooms, users }: any) => {
+  const [editingBooking, setEditingBooking] = useState<any>()
+  const [updatePayment, setUpdatePayment] = useState<string>()
+  const [updateStatus, setUpdateStatus] = useState<string>()
+
+  function byDate(a:any, b:any) {
+    return new Date(a.from.split('-').reverse().join()).valueOf() - new Date(b.from.split('-').reverse().join()).valueOf(); //timestamps
+  } 
+  const getRoomName = (roomId:string) => {
+    const room = rooms.filter((room:any) => room.id == roomId)
+    const roomName = (room[0].title)
+
+    return roomName
+  }
+  const getUserName = (userId:string) => {
+    const user = users.filter((user:any) => user.id == userId)
+    const userName = (user[0].name + ' ' + user[0].surname)
+
+    return userName
+  }
+  async function bookingEdit(booking:any) {
+    setEditingBooking(booking)
+  }
+  async function updateData(bookingId:string) {
+    try {
+      if (confirm("Você tem certeza de que deseja atualizar esta reserva?") == true) {
+        (updatePayment && updateStatus) ? (
+          await updateDoc(doc(fireDB, "bookings", bookingId), {
+            payment: updatePayment,
+            status: updateStatus
+          })
+        ) : (updatePayment && !updateStatus) ? (
+          await updateDoc(doc(fireDB, "bookings", bookingId), {
+            payment: updatePayment
+          })
+        ) : (!updatePayment && updateStatus) ? (
+          await updateDoc(doc(fireDB, "bookings", bookingId), {
+            status: updateStatus
+          })
+        ) : (!updatePayment && !updateStatus) ? (
+          alert('Não há nada para atualizar')
+        ) : (alert('Nada para realizar'))
+        alert("Reserva atualizada!")
+        location.reload()
+      }
+    } catch (error) {
+      alert(error)
+    }
+  }
+  async function deleteData(bookingId:string, roomId:string, bookingFrom:string, bookingTo:string) {
+    try {
+      if (confirm("Você tem certeza de que deseja cancelar esta reserva?" + roomId) == true) {
+        await deleteDoc(doc(fireDB, "bookings", bookingId)).then(function() {
+          updateDoc(doc(fireDB, "rooms", roomId), {
+            currentBookings: arrayRemove({
+              bookingId: bookingId,
+              fromdate: bookingFrom,
+              todate: bookingTo
+            })
+          })
+        })
+        alert("Reserva cancelada!")
+        location.reload()
+      }
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   return (
     <Container>
       <Wrapper>
@@ -22,21 +93,84 @@ const Admin = () => {
               <HeaderItem>Status</HeaderItem>
               <HeaderItemSmall>Ação</HeaderItemSmall>
             </TableHeader>
-            <TableRow >
-              <TableItem></TableItem>
-              <TableItem></TableItem>
-              <TableItem></TableItem>
-              <TableItem></TableItem>
-              <TableItem></TableItem>
-              <TableItem></TableItem>
-              <TableItem></TableItem>
-              <TableItemSmall style={{ gap: 8 }}>
-                <MdOutlineCancel style={{ cursor: 'pointer' }} size={16} color={'#EC5757'} />
-                <FaEdit style={{ cursor: 'pointer' }} size={16} color={'#C4C4C4'} />
-              </TableItemSmall>
+            {bookings.sort(byDate).map((booking:any) => (
+              <TableRow key={booking.id} >
+                <TableItem>{getUserName(booking.userId)}</TableItem>
+                <TableItem>{getRoomName(booking.roomId)}</TableItem>
+                <TableItem>{booking.from}</TableItem>
+                <TableItem>{booking.to}</TableItem>
+                <TableItem>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(booking.amount)}</TableItem>
+                <TableItem>{booking.payment}</TableItem>
+                <TableItem>{booking.status}</TableItem>
+                <TableItemSmall style={{ gap: 8 }}>
+                  <MdOutlineCancel style={{ cursor: 'pointer' }} size={16} color={'#EC5757'} onClick={() => deleteData(booking.id, booking.roomId, booking.from, booking.to)} />
+                  <FaEdit style={{ cursor: 'pointer' }} size={16} color={'#C4C4C4'} onClick={() => bookingEdit(booking)} />
+                </TableItemSmall>
+              </TableRow>
+            ))}
+          </Table>
+        </TableWrapper>
+        <TableWrapper>
+          <Table>
+            <TableHeader>
+              <HeaderItem>Total de Reservas</HeaderItem>
+              <HeaderItem>Valor Total Pago</HeaderItem>
+              <HeaderItem>Valor Total Esperado</HeaderItem>
+            </TableHeader>
+            <TableRow>
+              <TableItem>{/**{sortedBookings.filter((item) => item.from.slice(3, 10) == selectedMonth).length}*/}</TableItem>
+              <TableItem>{/**{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(getTotalPaidAmount(selectedMonth))}*/}</TableItem>
+              <TableItem>{/**{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(getTotalAmount(selectedMonth))}*/}</TableItem>
             </TableRow>
           </Table>
         </TableWrapper>
+        {(editingBooking) && (
+          <TableWrapper>
+            <Table>
+              <TableHeader style={{backgroundColor: '#EC5757'}} >
+                <HeaderItem>Nome</HeaderItem>
+                <HeaderItem>Quarto</HeaderItem>
+                <HeaderItem>Check-In</HeaderItem>
+                <HeaderItem>Check-Out</HeaderItem>
+                <HeaderItem>Valor Total</HeaderItem>
+                <HeaderItem>Pagamento</HeaderItem>
+                <HeaderItemSmall>Status</HeaderItemSmall>
+                <HeaderItemSmall>Ação</HeaderItemSmall>
+              </TableHeader>
+              <TableRow>
+                <TableItem>{getUserName(editingBooking.userId)}</TableItem>
+                <TableItem>{getRoomName(editingBooking.roomId)}</TableItem>
+                <TableItem>{editingBooking.from}</TableItem>
+                <TableItem>{editingBooking.to}</TableItem>
+                <TableItem>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(editingBooking.amount)}</TableItem>
+                <TableItem>
+                  <select defaultValue={editingBooking.payment}
+                    onChange={(e) =>
+                      setUpdatePayment(e.target.value)
+                    }>
+                    <option value="Crédito" >Cartão Crédito</option>
+                    <option value="Débito" >Cartão Débito</option>
+                    <option value="Pendente" >Pendente</option>
+                    <option value="Pix" >Pix</option>
+                    <option value="Espécie" >Espécie</option>
+                  </select>
+                </TableItem>
+                <TableItemSmall>
+                  <select defaultValue={editingBooking.status}
+                    onChange={(e) =>
+                      setUpdateStatus(e.target.value)
+                    }>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Pago">Pago</option>
+                  </select>
+                </TableItemSmall>
+                <TableItemSmall style={{ justifyContent: 'space-around' }}>
+                  <FaSave style={{ cursor: 'pointer' }} size={16} color={'#02AD50'} onClick={() => updateData(editingBooking.id)} />
+                </TableItemSmall>
+              </TableRow>
+            </Table>
+          </TableWrapper>
+        )}
       </Wrapper>
     </Container>
   );

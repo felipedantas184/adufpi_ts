@@ -29,17 +29,29 @@ export const Title = styled.h1`
   font-size: 32px;
   font-weight: 600;
   text-transform: capitalize;
+
+  @media screen and (max-width: 768px) {
+    font-size: 24px;
+  }
 `
 export const Cost = styled.p`
   color: #44444A;
   font-size: 16px;
   font-weight: 500;
+
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
 `
 export const Info = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 3fr 2fr;
   gap: 16px;
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `
 export const ImgWrap = styled.div`
   position: relative;
@@ -53,6 +65,10 @@ export const Boxes = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media screen and (max-width: 768px) {
+    gap: 16px;
+  }
 `
 export const BData = styled.div`
   padding: 16px;
@@ -115,7 +131,8 @@ export const Button = styled.button`
   
   cursor: pointer;
   transition: 0.5s;
-  
+  -webkit-tap-highlight-color: transparent;
+
   &:hover, &:focus {
     box-shadow: inset 400px 0 0 0 #13131A;
   }
