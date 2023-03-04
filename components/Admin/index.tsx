@@ -5,10 +5,21 @@ import { useState } from "react";
 import { arrayRemove, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import fireDB from "@/firebase/initFirebase";
 
+import { DatePicker } from 'antd'
+const { RangePicker } = DatePicker;
+import locale from 'antd/lib/date-picker/locale/pt_BR';
+import moment from 'moment';
+
+
 const Admin = ({ bookings, rooms, users }: any) => {
+  const [selectedMonth, setSelectedMonth] = useState(moment().utcOffset('-03:00').format('DD-MM-YYYY hh:mm:ss a').slice(3, 10))
   const [editingBooking, setEditingBooking] = useState<any>()
   const [updatePayment, setUpdatePayment] = useState<string>()
   const [updateStatus, setUpdateStatus] = useState<string>()
+
+  const onChange = (date:any, dateString:string) => {
+    setSelectedMonth(dateString)
+  };
 
   function byDate(a:any, b:any) {
     return new Date(a.from.split('-').reverse().join()).valueOf() - new Date(b.from.split('-').reverse().join()).valueOf(); //timestamps
@@ -78,8 +89,9 @@ const Admin = ({ bookings, rooms, users }: any) => {
     <Container>
       <Wrapper>
         <Heading>
-          <Title></Title>
+          <Title>{selectedMonth}</Title>
           <Subtitle></Subtitle>
+          <DatePicker picker="month" inputReadOnly={true} format="MM-YYYY" locale={locale} allowClear={false} onChange={onChange} />
         </Heading>
         <TableWrapper>
           <Table>
@@ -93,7 +105,8 @@ const Admin = ({ bookings, rooms, users }: any) => {
               <HeaderItem>Status</HeaderItem>
               <HeaderItemSmall>Ação</HeaderItemSmall>
             </TableHeader>
-            {bookings.sort(byDate).map((booking:any) => (
+            {bookings.sort(byDate).filter((item:any) => item.from.slice(3, 10) == selectedMonth)
+            .map((booking:any) => (
               <TableRow key={booking.id} >
                 <TableItem>{getUserName(booking.userId)}</TableItem>
                 <TableItem>{getRoomName(booking.roomId)}</TableItem>

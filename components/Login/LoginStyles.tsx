@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styled from "styled-components";
 
 export const Container = styled.section`
@@ -100,7 +101,7 @@ export const FButton = styled.button`
     box-shadow: inset 200px 0 0 0 #13131A;
   }
 `
-export const FOption = styled.p`
+export const FOption = styled(Link)`
   color: #22222A;
   font-size: 14px;
 `

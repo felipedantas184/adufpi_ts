@@ -1,18 +1,27 @@
 import Image from "next/image";
-import { Button, Card, Cards, CFooter, Container, CResume, CTitle, Details, DText, FText, Heading, ImgWrap, Subtitle, Text, Title, Wrapper } from "./ListStyles";
+import { Button, Card, Cards, CFooter, Container, CResume, CTitle, Details, DisabledButton, DText, FText, Heading, ImgWrap, Subtitle, Text, Title, Wrapper } from "./ListStyles";
 import { FiUsers } from 'react-icons/fi'
 import { useRouter } from "next/router";
 
-const List = ({availableRooms}: any) => {
+import { DatePicker } from 'antd'
+const { RangePicker } = DatePicker;
+import locale from 'antd/lib/date-picker/locale/pt_BR';
+import moment from 'moment';
+
+
+const List = ({availableRooms, totaldays, filterByDate, fromdate, todate}:any) => {
   const router = useRouter()
+  const disabledDate = (current:any) => {
+    return current && current < moment().endOf("day")
+  };
 
   function sendData(room: any) {
     router.push({
       pathname: `/checkout/${room.id}`,
       query: {
-        from: '02-01-2001',
-        to: '14-01-2001',
-        totaldays: 12
+        from: fromdate,
+        to: todate,
+        totaldays: totaldays
       }
     }, /**`/checkout/${room.id}`*/)
   }
@@ -21,8 +30,9 @@ const List = ({availableRooms}: any) => {
     <Container>
       <Wrapper>
         <Heading>
-          <Title>Apartamentos ADUFPI</Title>
+          <Title>Apartamentos ADUFPI {fromdate} {todate} </Title>
           <Subtitle>Selecione as datas da hospedagem</Subtitle>
+          <RangePicker format="DD-MM-YYYY" inputReadOnly={true} onChange={filterByDate} locale={locale} allowClear={false} disabledDate={disabledDate} />
         </Heading>
         <Cards>
           {availableRooms.map((room: any) => (
@@ -37,8 +47,12 @@ const List = ({availableRooms}: any) => {
               <CResume>{room.resume}</CResume>
             </Text>
             <CFooter>
-              <FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}</FText>
-              <Button onClick={() => sendData(room)}>Reservar Agora</Button>
+              <FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays)}</FText>
+              {(totaldays == 0) ? (
+                <DisabledButton>Selecione as Datas</DisabledButton>
+              ) : (
+                <Button onClick={() => sendData(room)}>Reservar Agora</Button>
+              )}
             </CFooter>
           </Card>
           ))}

@@ -60,6 +60,11 @@ export const ImgWrap = styled.div`
 
   border-radius: 8px;
   overflow: hidden;
+
+  @media screen and (max-width: 768px) {
+    min-height: 250px;
+    max-height: 250px;
+  }
 `
 export const Boxes = styled.div`
   display: flex;

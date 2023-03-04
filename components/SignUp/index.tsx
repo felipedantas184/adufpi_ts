@@ -1,8 +1,16 @@
+import { useAuth } from "@/context/AuthContext";
+import fireDB, { auth } from "@/firebase/initFirebase";
+import { updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useState } from "react"
-import { BWrap, Container, FButton, FOption, Form, Heading, Input, IWrap, Label, Title, Wrapper } from "./SignUpStyles";
+import { BWrap, Container, FButton, FOption, Form, Heading, Input, InputSplit, InputSplitGroup, IWrap, Label, Title, Wrapper } from "./SignUpStyles";
 
 const SingUp = () => {
+  const router = useRouter()
+  const { user, signup } = useAuth()
+  const [loading, setLoading] = useState(false)
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -14,6 +22,35 @@ const SingUp = () => {
     cep: '',
     relation: '',
   })
+
+  const handleSignup = async (e:any) => {
+    e.preventDefault()
+    try {
+      setLoading(true)
+      await signup(data.email, data.password).then(auth => {
+        return setDoc(doc(fireDB, "users", auth.user.uid), {
+          name: data.name,
+          surname: data.surname,
+          phone: data.phone,
+          cpf: data.cpf,
+          email: data.email,
+          address: data.address,
+          cep: data.cep,
+          relation: data.relation,
+          admin: false,
+        })
+      })
+      if (auth.currentUser !== null) {
+        updateProfile(auth.currentUser, {
+          displayName: data.name + ' ' + data.surname,
+        })
+      }
+      router.push('/login')
+    } catch (err) {
+      setLoading(false)
+      alert(err)
+    }
+  }
 
   return (
     <Container>
@@ -118,9 +155,35 @@ const SingUp = () => {
             />
           </IWrap>
         </Form>
+        <InputSplit style={{ justifyContent: 'space-between', width: '100%'}}>
+              <InputSplitGroup>
+                <div>
+                  <input type="radio" id="member" name="relation" value="member" required  
+                  onClick={(e:any) =>
+                    setData({
+                      ...data,
+                      relation: e.target.value,
+                    })
+                  }/>
+                  <Label htmlFor="member">Associado</Label>
+                </div>
+              </InputSplitGroup>
+              <InputSplitGroup>
+                <div>
+                  <input type="radio" id="guest" name="relation" value="guest" 
+                  onClick={(e:any) =>
+                    setData({
+                      ...data,
+                      relation: e.target.value,
+                    })
+                  }/>
+                  <Label htmlFor="guest">Convidado</Label>
+                </div>
+              </InputSplitGroup>
+            </InputSplit>
         <BWrap>
-          <FButton type="submit" >Cadastrar</FButton>
-          <FOption>Entre</FOption>
+          <FButton onClick={handleSignup} >Cadastrar</FButton>
+          <FOption href={'/login'}>Já possuo conta</FOption>
         </BWrap>
       </Wrapper>
     </Container>

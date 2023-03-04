@@ -127,3 +127,23 @@ export const Button = styled.button`
     box-shadow: inset 200px 0 0 0 #13131A;
   }
 `
+export const DisabledButton = styled.button`
+  background-color: #454545;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Poppins' !important;
+  text-transform: capitalize;
+
+  border: 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  
+  cursor: pointer;
+  transition: 0.5s;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover, &:focus {
+    box-shadow: inset 200px 0 0 0 #13131A;
+  }
+`

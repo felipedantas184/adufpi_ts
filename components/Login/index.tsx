@@ -63,8 +63,8 @@ const Login = () => {
             <FButton type="submit" >Entrar</FButton>
           </Form>
           <BWrap>
-            <FOption>Esqueci minha senha</FOption>
-            <FOption>Cadastre-se</FOption>
+            <FOption href={'/reset'} >Esqueci minha senha</FOption>
+            <FOption href={'/signup'}>Cadastre-se</FOption>
           </BWrap>
         </LBox>
         <RBox>

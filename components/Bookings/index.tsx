@@ -6,6 +6,7 @@ import { arrayRemove, collection, deleteDoc, doc, getDocs, query, updateDoc, whe
 import fireDB from "@/firebase/initFirebase";
 import { useAuth } from "@/context/AuthContext";
 import moment from "moment";
+import { sendCancelationMessage } from "@/lib/api";
 
 const Bookings = ({ rooms }: any) => {
   const { user } = useAuth();
@@ -68,6 +69,16 @@ const Bookings = ({ rooms }: any) => {
                 fromdate: bookingFrom,
                 todate: bookingTo
               })
+            })
+            sendCancelationMessage({
+              name: user?.displayName,
+              email: user?.email,
+              subject: 'Reserva Cancelada com Sucesso - ADUFPI',
+              from: bookingFrom,
+              to: bookingTo,
+              room: getRoomName(roomId),
+              amount: Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(bookingAmount),
+              bookingId: bookingId
             })
           })
           alert("Reserva cancelada!")

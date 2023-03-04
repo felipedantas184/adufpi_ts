@@ -4,6 +4,7 @@ import { addDoc, arrayUnion, collection, doc, updateDoc } from "firebase/firesto
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { BData, Boxes, BResume, Button, CBox, CLabel, CName, Container, Cost, CTitle, HBox, Heading, ImgWrap, Info, Title, Wrapper } from "./CheckoutStyles";
+import { sendContactForm } from "../../lib/api";
 
 const Checkout = ({ room, roomId }:any) => {
   const { user } = useAuth();
@@ -25,6 +26,16 @@ const Checkout = ({ room, roomId }:any) => {
         updateDoc(doc(fireDB, "rooms", roomId), {
           currentBookings: arrayUnion({ fromdate: from, todate: to, bookingId: docRef.id })
         })
+        sendContactForm({
+          name: user?.displayName,
+          email: user?.email,
+          subject: 'Reserva Realizada com Sucesso - ADUFPI',
+          from: from,
+          to: to,
+          room: room.title,
+          amount: Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price),
+          bookingId: docRef.id
+        })
       })
 
       alert("Reserva feita com sucesso")
@@ -42,7 +53,7 @@ const Checkout = ({ room, roomId }:any) => {
           <Cost>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}/diária</Cost>
         </Heading>
         <Info>
-          <ImgWrap><Image src={'/images/banner.png'} alt="Room" fill /></ImgWrap>
+          <ImgWrap><Image src={room.imageurl} alt={room.title} fill /></ImgWrap>
           <Boxes>
             <BData>
               <CTitle>Confirmação</CTitle>
