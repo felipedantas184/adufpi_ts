@@ -54,7 +54,6 @@ const Bookings = ({ rooms }: any) => {
     //chronologically by year, month, then day
     return new Date(a.from.split('-').reverse().join()).valueOf() - new Date(b.from.split('-').reverse().join()).valueOf(); //timestamps
   }
-  const sortedBookings = bookings.sort(byDate)
 
   
   return (
@@ -66,7 +65,7 @@ const Bookings = ({ rooms }: any) => {
         </Heading>
         {(!loading) ? (
           <Cards>
-            {sortedBookings.map((booking: any) => (
+            {bookings.sort(byDate).map((booking: any) => (
               <Card key={booking.id} >
                 <ImgWrap><Image src={getRoomImage(booking.roomId)} alt={getRoomName(booking.roomId)} fill /></ImgWrap>
                 <Text>
