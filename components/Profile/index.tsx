@@ -16,7 +16,6 @@ const Profile = () => {
         const data = await getDoc(doc(fireDB, "users", user?.uid));
         const userData = data.data()
       
-        console.log(userData)
         setUserData(userData)
         setLoading(false)
       }

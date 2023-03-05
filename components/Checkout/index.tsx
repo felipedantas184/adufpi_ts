@@ -1,22 +1,23 @@
 import { useAuth } from "@/context/AuthContext";
 import fireDB from "@/firebase/initFirebase";
-import { addDoc, arrayUnion, collection, doc, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { BData, Boxes, BResume, Button, CBox, CLabel, CName, Container, Cost, CTitle, HBox, Heading, ImgWrap, Info, Title, Wrapper } from "./CheckoutStyles";
 import { sendContactForm } from "../../lib/api";
 import moment from "moment";
+import { useEffect, useState } from "react";
 
-const Checkout = ({ room, roomId }:any) => {
+const Checkout = ({ room, roomId }: any) => {
   const { user } = useAuth();
   const router = useRouter();
+  const [userData, setUserData] = useState<any>()
+  const [loading, setLoading] = useState<boolean>(true)
   const { from, to } = router.query;
-
   var totaldays = moment.duration(moment(to, 'DD-MM-YYYY').diff(moment(from, 'DD-MM-YYYY'))).asDays()
   if (totaldays == 0) {
     totaldays = 1
   }
-
   async function adddata() {
     try {
       await addDoc(collection(fireDB, "bookings"), {
@@ -25,7 +26,7 @@ const Checkout = ({ room, roomId }:any) => {
         to: to,
         roomId: roomId,
         bookingdate: 'now',
-        amount: room.price*totaldays,
+        amount: (userData.relation === 'member') ? (room.price * totaldays) : (room.guestprice * totaldays),
         payment: 'Pendente',
         status: 'Pendente'
       }).then(function (docRef) {
@@ -39,8 +40,9 @@ const Checkout = ({ room, roomId }:any) => {
           from: from,
           to: to,
           room: room.title,
-          amount: Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price),
-          bookingId: docRef.id
+          amount: (userData.relation === 'member') ? (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price*totaldays)) : (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice*totaldays)),
+          bookingId: docRef.id,
+          observations: 'a.	Não servimos café da manhã; b.	Não aceitamos pets; c.	Não nos responsabilizamos pela segurança dos veículos e objetos deixados no seu interior; d.	Estacionamento gratuito; e.	WIFI gratuito; f.	Horário do Checkin 14h00 e Checkout 12h00; g.	Favor trazer este email com a confirmação de reserva para apresentar à Portaria, principalmente se o checkin for fora do horário comercial; h.	Cancelamentos só serão aceitos com um dia de antecedência; i.	Permanência máxima de 15 dias; j.	Hospedagem permitida exclusivamente de associados, parentes em 1º grau e professores de outras IES; k.	Havendo mudança de apartamento coletivo para individual os valores serão recalculados;'
         })
       })
 
@@ -51,12 +53,30 @@ const Checkout = ({ room, roomId }:any) => {
     }
   }
 
+  useEffect(() => {
+    async function getBookings() {
+      if (user !== null) {
+        const data = await getDoc(doc(fireDB, "users", user?.uid));
+        const userData = data.data()
+
+        setUserData(userData)
+        setLoading(false)
+      }
+    }
+
+    getBookings()
+  }, [user])
+
   return (
     <Container>
       <Wrapper>
         <Heading>
           <Title>{room.title}</Title>
-          <Cost>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}/diária</Cost>
+          {(!loading) ? (
+            (userData.relation === 'member') ? (
+              <Cost>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}/diária</Cost>
+            ) : (<Cost>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice)}/diária</Cost>)
+          ) : (<></>)}
         </Heading>
         <Info>
           <ImgWrap><Image src={room.imageurl} alt={room.title} fill /></ImgWrap>
@@ -94,10 +114,14 @@ const Checkout = ({ room, roomId }:any) => {
             </BData>
             <BResume>
               <HBox>
-                <CLabel style={{alignSelf: 'flex-end', fontWeight: 600}}>Valor</CLabel>
+                <CLabel style={{ alignSelf: 'flex-end', fontWeight: 600 }}>Valor</CLabel>
                 <CBox>
-                  <CName style={{textAlign: 'right'}}>{totaldays} Diárias</CName>
-                  <CName style={{textAlign: 'right', fontWeight: 600}}>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price*totaldays)}</CName>
+                  <CName style={{ textAlign: 'right' }}>{totaldays} Diárias</CName>
+                  <CName style={{ textAlign: 'right', fontWeight: 600 }}>
+                  {(!loading) ? (
+                    (userData.relation === 'member') ? (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price*totaldays)) : (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice*totaldays))
+                  ) : (<></>)}
+                  </CName>
                 </CBox>
               </HBox>
               <Button onClick={() => adddata()}>Confirmar Reserva</Button>

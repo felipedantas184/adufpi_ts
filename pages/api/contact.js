@@ -9,7 +9,8 @@ const CONTACT_MESSAGE_FIELDS = {
   from: "Check-In",
   to: 'Check-Out',
   room: 'Quarto',
-  amount: 'Valor Total'
+  amount: 'Valor Total',
+  observations: 'Observações'
 };
 
 const generateEmailContent = (data) => {
@@ -31,7 +32,7 @@ const generateEmailContent = (data) => {
 const handler = async (req, res) => {
   if (req.method === "POST") {
     const data = req.body;
-    if (!data || !data.name || !data.email || !data.subject || !data.from || !data.to || !data.room || !data.amount) {
+    if (!data || !data.name || !data.email || !data.subject || !data.from || !data.to || !data.room || !data.amount || !data.observations) {
       return res.status(400).send({ message: "Bad request" });
     }
 
