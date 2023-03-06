@@ -17,6 +17,10 @@ export const Wrapper = styled.div`
   
   display: flex;
   flex-direction: row;
+
+  @media screen and (max-width: 768px) {
+    margin: 16px;
+  }
 `
 export const LBox = styled.div`
   flex: 5;
