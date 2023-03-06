@@ -39,7 +39,7 @@ export const Title = styled.h1`
   font-weight: 600;
   text-transform: capitalize;
 `
-export const Form = styled.form`
+export const Form = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(4, 1fr);

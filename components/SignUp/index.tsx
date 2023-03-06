@@ -23,7 +23,7 @@ const SingUp = () => {
     relation: '',
   })
 
-  const handleSignup = async (e:any) => {
+  const handleSignup = async (e: any) => {
     e.preventDefault()
     try {
       setLoading(true)
@@ -59,6 +59,7 @@ const SingUp = () => {
           <Image src={'/images/black_logo.png'} width={200} height={66} alt='ADUFPI' />
           <Title>Cadastro</Title>
         </Heading>
+        <form onSubmit={handleSignup} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16}} >
         <Form>
           <IWrap>
             <Label>Primeiro Nome</Label>
@@ -108,7 +109,7 @@ const SingUp = () => {
           </IWrap>
           <IWrap>
             <Label>Telefone</Label>
-            <Input type={'number'} placeholder="86995185757" required
+            <Input type={'number'} placeholder="86998885566" required
               onChange={(e) =>
                 setData({
                   ...data,
@@ -120,7 +121,7 @@ const SingUp = () => {
           </IWrap>
           <IWrap>
             <Label>CPF</Label>
-            <Input type={'number'} placeholder="05620204383" required
+            <Input type={'number'} placeholder="12345678901" required
               onChange={(e) =>
                 setData({
                   ...data,
@@ -155,36 +156,37 @@ const SingUp = () => {
             />
           </IWrap>
         </Form>
-        <InputSplit style={{ justifyContent: 'space-between', width: '100%'}}>
-              <InputSplitGroup>
-                <div>
-                  <input type="radio" id="member" name="relation" value="member" required  
-                  onClick={(e:any) =>
-                    setData({
-                      ...data,
-                      relation: e.target.value,
-                    })
-                  }/>
-                  <Label htmlFor="member">Associado</Label>
-                </div>
-              </InputSplitGroup>
-              <InputSplitGroup>
-                <div>
-                  <input type="radio" id="guest" name="relation" value="guest" 
-                  onClick={(e:any) =>
-                    setData({
-                      ...data,
-                      relation: e.target.value,
-                    })
-                  }/>
-                  <Label htmlFor="guest">Convidado</Label>
-                </div>
-              </InputSplitGroup>
-            </InputSplit>
+        <InputSplit style={{ justifyContent: 'space-between', width: '100%' }}>
+          <InputSplitGroup>
+            <div>
+              <input type="radio" id="member" name="relation" value="member" required
+                onClick={(e: any) =>
+                  setData({
+                    ...data,
+                    relation: e.target.value,
+                  })
+                } />
+              <Label htmlFor="member">Associado</Label>
+            </div>
+          </InputSplitGroup>
+          <InputSplitGroup>
+            <div>
+              <input type="radio" id="guest" name="relation" value="guest"
+                onClick={(e: any) =>
+                  setData({
+                    ...data,
+                    relation: e.target.value,
+                  })
+                } />
+              <Label htmlFor="guest">Convidado</Label>
+            </div>
+          </InputSplitGroup>
+        </InputSplit>
         <BWrap>
-          <FButton onClick={handleSignup} >Cadastrar</FButton>
+          <FButton type="submit" >Cadastrar</FButton>
           <FOption href={'/login'}>Já possuo conta</FOption>
         </BWrap>
+        </form>
       </Wrapper>
     </Container>
   );

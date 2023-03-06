@@ -128,7 +128,7 @@ const Checkout = ({ room, roomId }: any) => {
             </BResume>
           </Boxes>
           <CName>{room.description}</CName>
-          <CName>Resume about the room and a bunch of features of each room.</CName>
+          <CName>As reservas estão sujeitas às regras contidas na página principal.</CName>
         </Info>
       </Wrapper>
     </Container>
