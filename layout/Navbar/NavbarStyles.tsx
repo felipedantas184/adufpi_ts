@@ -70,6 +70,7 @@ export const Logout = styled.button`
   height: 60px;
   padding: 0 1rem;
   font-size: 14px;
+  font-family: 'Poppins', sans-serif;
 
   display: flex;
   flex-direction: row;

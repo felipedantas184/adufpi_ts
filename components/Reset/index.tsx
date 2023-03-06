@@ -45,11 +45,11 @@ const Reset = () => {
                 value={email}
               />
             </IWrap>
-            <FButton type="submit" >Entrar</FButton>
+            <FButton type="submit" >Recuperar Senha</FButton>
           </Form>
           <BWrap>
-            <FOption>Entre</FOption>
-            <FOption>Cadastre-se</FOption>
+            <FOption href={'/login'} >Entrar</FOption>
+            <FOption href={'/signup'}>Cadastre-se</FOption>
           </BWrap>
         </LBox>
         <RBox>
