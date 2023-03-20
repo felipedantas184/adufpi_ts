@@ -59,10 +59,14 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
             <Card key={room.id} >
               <ImgWrap><Image src={room.imageurl} alt={room.title} fill /></ImgWrap>
               <Text>
+                {(!loading) ? (
                 <Details>
-                  <DText>Diária: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}</DText>
+                  {(userData.relation === 'member') ? (
+                    <DText>Diária: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}</DText>
+                  ) : (<DText>Diária: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice)}</DText>)}
                   <DText>{room.capacity}<FiUsers size={14} color={'#EB5757'} /></DText>
                 </Details>
+                ) : (<></>)}
                 <CTitle>{room.title}</CTitle>
                 <CResume>{room.resume}</CResume>
               </Text>
