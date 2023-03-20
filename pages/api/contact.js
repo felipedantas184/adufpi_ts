@@ -38,7 +38,7 @@ const handler = async (req, res) => {
 
     const mailOptions = {
       from: email,
-      to: [data.email, email],
+      to: [data.email, 'reservas.casadocente@gmail.com'],
     };
 
     try {
