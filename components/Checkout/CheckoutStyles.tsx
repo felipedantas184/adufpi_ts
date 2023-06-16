@@ -80,7 +80,7 @@ export const BData = styled.div`
 
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 
   border-radius: 8px;
   background-color: #F6F6F6;
@@ -112,10 +112,10 @@ export const HBox = styled.div`
 `
 export const BResume = styled.div`
   padding: 16px;
-
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 
   border-radius: 8px;
   background-color: #F6F6F6;
@@ -141,4 +141,17 @@ export const Button = styled.button`
   &:hover, &:focus {
     box-shadow: inset 400px 0 0 0 #13131A;
   }
+`
+export const Input = styled.textarea`
+  background-color: #fff;
+  color: #33333A;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  resize: none;
+
+  padding: 8px 12px; 
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  outline: none;
 `

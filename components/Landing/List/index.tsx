@@ -46,6 +46,15 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
     getBookings()
   }, [user])
 
+  //FILTER//
+  function byName(a:any, b:any) {
+    if(a.slug < b.slug) { return -1; }
+    if(a.slug > b.slug) { return 1; }
+    return 0;  
+  }
+
+  console.log(availableRooms)
+   
   return (
     <Container>
       <Wrapper>
@@ -54,8 +63,51 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
           <Subtitle>Selecione as datas da hospedagem</Subtitle>
           <RangePicker format="DD-MM-YYYY" inputReadOnly={true} onChange={filterByDate} locale={locale} allowClear={false} disabledDate={disabledDate} />
         </Heading>
+        
+        <div style={{alignSelf: 'flex-start', marginTop: 24}} >
+          <Title>Suítes Casais - Privativas</Title>
+          <Subtitle>As suítes casais não são compartilhadas com outros hóspedes.</Subtitle>
+        </div>
         <Cards>
-          {availableRooms.map((room: any) => (
+          {availableRooms.sort(byName).filter((item:any) => item.title.slice(6, 11) == 'Casal').map((room: any) => (
+            <Card key={room.id} >
+              <ImgWrap><Image src={room.imageurl} alt={room.title} fill /></ImgWrap>
+              <Text>
+                {(!loading) ? (
+                <Details>
+                  {(userData.relation === 'member') ? (
+                    <DText>Diária: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}</DText>
+                  ) : (<DText>Diária: {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice)}</DText>)}
+                  <DText>{room.capacity}<FiUsers size={14} color={'#EB5757'} /></DText>
+                </Details>
+                ) : (<></>)}
+                <CTitle>{room.title}</CTitle>
+                <CResume>{room.resume}</CResume>
+              </Text>
+              {(!loading) ? (
+                <CFooter>
+                  {(userData.relation === 'member') ? (
+                    <FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays)}</FText>
+                  ) : (<FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays)}</FText>)}
+                  {(totaldays == 0) ? (
+                    <DisabledButton>Selecione as Datas</DisabledButton>
+                  ) : (
+                    <Button onClick={() => sendData(room)}>Reservar Agora</Button>
+                  )}
+                </CFooter>
+              ) : (<></>)
+              }
+            </Card>
+          ))}
+        </Cards>
+
+
+        <div style={{alignSelf: 'flex-start', marginTop: 24}} >
+          <Title>Apartamentos Coletivos</Title>
+          <Subtitle>Os quartos a seguir são compartilhados</Subtitle>
+        </div>
+        <Cards>
+          {availableRooms.sort(byName).filter((item:any) => item.title.slice(6, 14) == 'Coletiva').map((room: any) => (
             <Card key={room.id} >
               <ImgWrap><Image src={room.imageurl} alt={room.title} fill /></ImgWrap>
               <Text>
