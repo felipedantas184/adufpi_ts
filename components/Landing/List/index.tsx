@@ -66,7 +66,7 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
         
         <div style={{alignSelf: 'flex-start', marginTop: 24}} >
           <Title style={{fontSize: 20}} >Suítes Casais - Privativas</Title>
-          <Subtitle>As suítes casais não são compartilhadas com outros hóspedes.</Subtitle>
+          <Subtitle style={{fontSize: 16}}>As suítes casais não são compartilhadas com outros hóspedes.</Subtitle>
         </div>
         <Cards>
           {availableRooms.sort(byName).filter((item:any) => item.title.slice(6, 11) == 'Casal').map((room: any) => (
@@ -103,8 +103,8 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
 
 
         <div style={{alignSelf: 'flex-start', marginTop: 24}} >
-          <Title>Apartamentos Coletivos</Title>
-          <Subtitle>Os quartos a seguir são compartilhados</Subtitle>
+          <Title style={{fontSize: 20}}>Apartamentos Coletivos</Title>
+          <Subtitle style={{fontSize: 16}}>Os quartos a seguir são compartilhados</Subtitle>
         </div>
         <Cards>
           {availableRooms.sort(byName).filter((item:any) => item.title.slice(6, 14) == 'Coletiva').map((room: any) => (
