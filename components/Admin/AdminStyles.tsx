@@ -90,6 +90,17 @@ export const TableRow = styled.div`
   justify-content: space-between;
   align-items: center;
 `
+export const DetailsRow = styled.div`
+  background-color: #F1F1F1;
+  width: 100%;
+  padding: 16px 8px;
+  border-bottom: 1px solid #13131A;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`
 export const TableItem = styled.div`
   flex: 2;
   color: #13131A;
@@ -109,4 +120,13 @@ export const TableItemSmall = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+`
+export const DetailsItem = styled.div`
+  flex: 1;
+  color: #13131A;
+  font-size: 14px;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 `

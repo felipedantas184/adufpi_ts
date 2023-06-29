@@ -12,7 +12,7 @@ const Checkout = ({ room, roomId }: any) => {
   const { user } = useAuth();
   const router = useRouter();
   const [userData, setUserData] = useState<any>()
-  const [paymentMethod, setPaymentMethod] = useState<string>()
+  const [paymentMethod, setPaymentMethod] = useState<string>('Débito em Conta - Pendente')
   const [bookingDetails, setBookingDetails] = useState<string>()
   const [loading, setLoading] = useState<boolean>(true)
   const { from, to } = router.query;
@@ -55,6 +55,8 @@ const Checkout = ({ room, roomId }: any) => {
       alert(error)
     }
   }
+
+  console.log(user)
 
   useEffect(() => {
     async function getBookings() {
@@ -119,15 +121,16 @@ const Checkout = ({ room, roomId }: any) => {
                   onChange={(e) =>
                     setPaymentMethod(e.target.value)
                   }>
-                  <option value="Crédito - Pendente" >Cartão Crédito</option>
-                  <option value="Débito - Pendente" >Cartão Débito</option>
-                  <option value="Pix - Pendente" >Pix</option>
-                  <option value="Espécie - Pendente" >Espécie</option>
+                  <option value="Débito em Conta - Pendente">Débito em Conta</option>
+                  <option value="Cartão Crédito - Pendente">Cartão Crédito</option>
+                  <option value="Cartão Débito - Pendente">Cartão Débito</option>
+                  <option value="Pix - Pendente">Pix</option>
+                  <option value="Espécie - Pendente">Espécie</option>
                 </select>
               </CBox>
               <CBox>
-                <CLabel>Detalhes da Hospedagem</CLabel>
-                <Input placeholder="Informe os dados do(s) hóspede(s)."
+                <CLabel>Nomes dos Hóspedes e Observações</CLabel>
+                <Input placeholder="Informe os dados do(s) hóspede(s) e observações."
                 onChange={(e) =>
                   setBookingDetails(e.target.value)
                 }

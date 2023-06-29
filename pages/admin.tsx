@@ -3,12 +3,13 @@ import { useAuth } from "@/context/AuthContext";
 import fireDB from "@/firebase/initFirebase";
 import Layout from "@/layout/Layout";
 import { collection, getDocs } from "firebase/firestore";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from 'react'
 
 export async function getServerSideProps() {
   const firebaseBookings = await getDocs(collection(fireDB, "bookings"));
-  const bookings:any = []
+  const bookings: any = []
   firebaseBookings.forEach((doc) => {
     const obj = {
       id: doc.id,
@@ -19,7 +20,7 @@ export async function getServerSideProps() {
   });
 
   const firebaseRooms = await getDocs(collection(fireDB, "rooms"));
-  const rooms:any = []
+  const rooms: any = []
   firebaseRooms.forEach((doc) => {
     const obj = {
       id: doc.id,
@@ -30,7 +31,7 @@ export async function getServerSideProps() {
   });
 
   const firebaseUsers = await getDocs(collection(fireDB, "users"));
-  const users:any = []
+  const users: any = []
   firebaseUsers.forEach((doc) => {
     const obj = {
       id: doc.id,
@@ -49,11 +50,11 @@ export async function getServerSideProps() {
   }
 }
 
-const AdminPage = ({ bookings, rooms, users }:any) => {
+const AdminPage = ({ bookings, rooms, users }: any) => {
   const router = useRouter()
   const { user } = useAuth()
 
-  const userData = users.filter((u:any) => u.id == user?.uid)
+  const userData = users.filter((u: any) => u.id == user?.uid)
   const adminPrivilege = userData[0].admin
 
   useEffect(() => {
@@ -62,13 +63,29 @@ const AdminPage = ({ bookings, rooms, users }:any) => {
     }
   }, [adminPrivilege, router])
 
-  return ( 
-    <Layout>
-      {(adminPrivilege) && (
-      <Admin bookings={bookings} rooms={rooms} users={users} />
-      )}
-    </Layout>
-   );
+  return (
+    <>
+      <Head>
+        <title>Painel Administrativo ADUFPI | Apartamentos</title>
+        <meta name="description" content="Reserva de apartamentos ADUFPI. Realize sua reserva em nosso site e aproveite de todas as comodidades." />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+        <meta property="og:title" content="Painel Administrativo ADUFPI | Apartamentos" />
+        <meta property="og:description" content="Reserva de apartamentos ADUFPI. Realize sua reserva em nosso site e aproveite de todas as comodidades." />
+        <meta property="og:image" content="/apple-touch-icon.png" />
+        <meta property="og:site_name" content="Painel Administrativo ADUFPI | Apartamentos" />
+
+        <meta property="twitter:title" content="Painel Administrativo ADUFPI | Apartamentos" />
+        <meta property="twitter:description" content="Reserva de apartamentos ADUFPI. Realize sua reserva em nosso site e aproveite de todas as comodidades." />
+        <meta property="twitter:image" content="/apple-touch-icon.png" />
+      </Head>
+      <Layout>
+        {(adminPrivilege) && (
+          <Admin bookings={bookings} rooms={rooms} users={users} />
+        )}
+      </Layout>
+    </>
+  );
 }
- 
+
 export default AdminPage;

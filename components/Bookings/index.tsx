@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button, Card, Cards, CFooter, CLabel, Container, CResume, CTitle, Details, DText, FText, Group, Heading, ImgWrap, Info, Subtitle, Text, Title, Wrapper } from "./BookignsStyles";
+import { Button, Card, Cards, CDetails, CFooter, CLabel, Container, CResume, CTitle, Details, DetailsBox, DText, FText, Group, Heading, ImgWrap, Info, Subtitle, Text, Title, Wrapper } from "./BookignsStyles";
 import { FiUsers } from 'react-icons/fi'
 import { useEffect, useState } from "react";
 import { arrayRemove, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
@@ -52,17 +52,17 @@ const Bookings = ({ rooms }: any) => {
 
     return roomImage
   }
-  function byDate(a:any, b:any) {
+  function byDate(a: any, b: any) {
     //chronologically by year, month, then day
     return new Date(a.from.split('-').reverse().join()).valueOf() - new Date(b.from.split('-').reverse().join()).valueOf(); //timestamps
   }
 
 
-  async function deleteData(bookingId:string, roomId:string, bookingFrom:string, bookingTo:string, bookingAmount:number, bookingUserId:string) {
+  async function deleteData(bookingId: string, roomId: string, bookingFrom: string, bookingTo: string, bookingAmount: number, bookingUserId: string) {
     try {
       if (confirm("Você tem certeza de que deseja cancelar esta reserva?") == true) {
         if (moment.duration((moment(bookingFrom, 'DD-MM-YYYY').diff(moment(moment().utcOffset('-03:00').format('DD-MM-YYYY'), 'DD-MM-YYYY')))).asDays() > 0) {
-          await deleteDoc(doc(fireDB, "bookings", bookingId)).then(function() {
+          await deleteDoc(doc(fireDB, "bookings", bookingId)).then(function () {
             updateDoc(doc(fireDB, "rooms", roomId), {
               currentBookings: arrayRemove({
                 bookingId: bookingId,
@@ -92,13 +92,13 @@ const Bookings = ({ rooms }: any) => {
     }
   }
 
-  
+
   return (
     <Container>
       <Wrapper>
         <Heading>
-          <Title>Apartamentos ADUFPI</Title>
-          <Subtitle>Selecione as datas da hospedagem</Subtitle>
+          <Title>Minhas Reservas</Title>
+          <Subtitle>Listagem das suas reservas na ADUFPI</Subtitle>
         </Heading>
         {(!loading) ? (
           <Cards>
@@ -127,6 +127,10 @@ const Bookings = ({ rooms }: any) => {
                       <CLabel>Check-Out</CLabel>
                       <CResume>{booking.to}</CResume>
                     </Group>
+                    <DetailsBox>
+                      <CLabel>Nomes dos Hóspedes e Observações</CLabel>
+                      <CDetails>{booking.details}</CDetails>
+                    </DetailsBox>
                   </Info>
                 </Text>
                 <CFooter>

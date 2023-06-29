@@ -58,7 +58,7 @@ export const ImgWrap = styled.div`
   border-radius: 20px 20px 0 0;
   overflow: hidden;
 `
-export const Text = styled.div`
+export const Text = styled.div`  
   display: flex;
   flex-direction: column;
 	padding: 16px;
@@ -107,6 +107,12 @@ export const Group = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
 `
+export const DetailsBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  grid-column: 1 / -1;
+`
 export const CLabel = styled.p`
   color: #13131A;
   font-size: 14px;
@@ -124,6 +130,13 @@ export const CResume = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`
+export const CDetails = styled.p`
+  max-width: 500px;
+  color: #44444A;
+  font-size: 14px;
+  font-weight: 400;
+  white-space: pre-wrap;
 `
 export const CFooter = styled.div`
   display: flex;

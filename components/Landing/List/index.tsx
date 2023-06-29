@@ -20,7 +20,7 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
   const [loading, setLoading] = useState<boolean>(true)
 
   const disabledDate = (current: any) => {
-    return current && current < moment().endOf("day")
+    return current && current < moment().startOf('day')
   };
   function sendData(room: any) {
     router.push({
@@ -65,7 +65,7 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
         </Heading>
         
         <div style={{alignSelf: 'flex-start', marginTop: 24}} >
-          <Title>Suítes Casais - Privativas</Title>
+          <Title style={{fontSize: 20}} >Suítes Casais - Privativas</Title>
           <Subtitle>As suítes casais não são compartilhadas com outros hóspedes.</Subtitle>
         </div>
         <Cards>

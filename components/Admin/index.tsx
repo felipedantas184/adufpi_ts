@@ -1,6 +1,6 @@
 import { FaEdit, FaSave } from "react-icons/fa";
 import { MdOutlineCancel } from 'react-icons/md'
-import { Container, HeaderItem, HeaderItemSmall, Heading, Subtitle, Table, TableHeader, TableItem, TableItemSmall, TableRow, TableWrapper, Title, Wrapper } from "./AdminStyles";
+import { Container, DetailsItem, DetailsRow, HeaderItem, HeaderItemSmall, Heading, Subtitle, Table, TableHeader, TableItem, TableItemSmall, TableRow, TableWrapper, Title, Wrapper } from "./AdminStyles";
 import { useState } from "react";
 import { arrayRemove, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import fireDB from "@/firebase/initFirebase";
@@ -109,29 +109,34 @@ const Admin = ({ bookings, rooms, users }: any) => {
           <Table>
             <TableHeader>
               <HeaderItem>Nome</HeaderItem>
-              <HeaderItem>Quarto</HeaderItem>
-              <HeaderItem>Check-In</HeaderItem>
-              <HeaderItem>Check-Out</HeaderItem>
-              <HeaderItem>Valor Total</HeaderItem>
-              <HeaderItem>Pagamento</HeaderItem>
-              <HeaderItem>Status</HeaderItem>
+              <HeaderItemSmall>Quarto</HeaderItemSmall>
+              <HeaderItemSmall>Check-In</HeaderItemSmall>
+              <HeaderItemSmall>Check-Out</HeaderItemSmall>
+              <HeaderItemSmall>Valor Total</HeaderItemSmall>
+              <HeaderItemSmall>Pagamento</HeaderItemSmall>
+              <HeaderItemSmall>Status</HeaderItemSmall>
               <HeaderItemSmall>Ação</HeaderItemSmall>
             </TableHeader>
             {bookings.sort(byDate).filter((item:any) => item.from.slice(3, 10) == selectedMonth)
             .map((booking:any) => (
+              <>
               <TableRow key={booking.id} >
-                <TableItem>{getUserName(booking.userId)}</TableItem>
-                <TableItem>{getRoomName(booking.roomId)}</TableItem>
-                <TableItem>{booking.from}</TableItem>
-                <TableItem>{booking.to}</TableItem>
-                <TableItem>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(booking.amount)}</TableItem>
-                <TableItem>{booking.payment}</TableItem>
-                <TableItem>{booking.status}</TableItem>
+                <TableItem style={{justifyContent: 'flex-start', fontWeight: 500}} >{getUserName(booking.userId)}</TableItem>
+                <TableItemSmall>{getRoomName(booking.roomId)}</TableItemSmall>
+                <TableItemSmall>{booking.from}</TableItemSmall>
+                <TableItemSmall>{booking.to}</TableItemSmall>
+                <TableItemSmall>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(booking.amount)}</TableItemSmall>
+                <TableItemSmall>{booking.payment}</TableItemSmall>
+                <TableItemSmall>{booking.status}</TableItemSmall>
                 <TableItemSmall style={{ gap: 8 }}>
                   <MdOutlineCancel style={{ cursor: 'pointer' }} size={16} color={'#EC5757'} onClick={() => deleteData(booking.id, booking.roomId, booking.from, booking.to)} />
                   <FaEdit style={{ cursor: 'pointer' }} size={16} color={'#C4C4C4'} onClick={() => bookingEdit(booking)} />
                 </TableItemSmall>
               </TableRow>
+              <DetailsRow>
+                <DetailsItem>Observações: {booking.details}</DetailsItem>
+              </DetailsRow>
+              </>
             ))}
           </Table>
         </TableWrapper>
