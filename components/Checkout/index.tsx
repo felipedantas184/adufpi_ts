@@ -45,7 +45,7 @@ const Checkout = ({ room, roomId }: any) => {
           room: room.title,
           amount: (userData.relation === 'member') ? (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays)) : (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays)),
           bookingId: docRef.id,
-          observations: 'a.	Não servimos café da manhã; b.	Não aceitamos pets; c.	Não nos responsabilizamos pela segurança dos veículos e objetos deixados no seu interior; d.	Estacionamento gratuito; e.	WIFI gratuito; f.	Horário do Checkin 14h00 e Checkout 12h00; g.	Favor trazer este email com a confirmação de reserva para apresentar à Portaria, principalmente se o checkin for fora do horário comercial; h.	Cancelamentos só serão aceitos com um dia de antecedência; i.	Permanência máxima de 15 dias; j.	Hospedagem permitida exclusivamente de associados, parentes em 1º grau e professores de outras IES; k.	Havendo mudança de apartamento coletivo para individual os valores serão recalculados;'
+          observations: 'OS APARTAMENTOS COLETIVOS SÃO COMPARTILHADOS E UM NOVO HÓSPEDE PODE SER INCLÚIDO NO APARTAMENTO A QUALQUER MOMENTO.   a.	Não servimos café da manhã; b.	Não aceitamos pets; c.	Não nos responsabilizamos pela segurança dos veículos e objetos deixados no seu interior; d.	Estacionamento gratuito; e.	WIFI gratuito; f.	Horário do Checkin 14h00 e Checkout 12h00; g.	Favor trazer este email com a confirmação de reserva para apresentar à Portaria, principalmente se o checkin for fora do horário comercial; h.	Cancelamentos só serão aceitos com um dia de antecedência; i.	Permanência máxima de 15 dias; j.	Hospedagem permitida exclusivamente de associados, parentes em 1º grau e professores de outras IES; k.	Havendo mudança de apartamento coletivo para individual os valores serão recalculados;'
         })
       })
 
@@ -129,8 +129,8 @@ const Checkout = ({ room, roomId }: any) => {
                 </select>
               </CBox>
               <CBox>
-                <CLabel>Nomes dos Hóspedes e Observações</CLabel>
-                <Input placeholder="Informe os dados do(s) hóspede(s) e observações."
+                <CLabel>Nome do Hóspede e Contato</CLabel>
+                <Input placeholder="João da Silva - 86999811520" maxLength={80}
                 onChange={(e) =>
                   setBookingDetails(e.target.value)
                 }
@@ -152,8 +152,9 @@ const Checkout = ({ room, roomId }: any) => {
               <Button onClick={() => adddata()}>Confirmar Reserva</Button>
             </BResume>
           </Boxes>
+          <CName>As reservas estão sujeitas às regras contidas na página principal. Suítes coletivas podem ser ocupadas a qualquer momento por outros hóspedes.</CName>
+          <CName><b>As suítes coletivas devem ser reservadas para uma ÚNICA pessoa.</b></CName>
           <CName>{room.description}</CName>
-          <CName>As reservas estão sujeitas às regras contidas na página principal.</CName>
         </Info>
       </Wrapper>
     </Container>

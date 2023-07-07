@@ -104,7 +104,7 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
 
         <div style={{alignSelf: 'flex-start', marginTop: 24}} >
           <Title style={{fontSize: 20}}>Apartamentos Coletivos</Title>
-          <Subtitle style={{fontSize: 16}}>Os quartos a seguir são compartilhados</Subtitle>
+          <Subtitle style={{fontSize: 16}}>Os quartos a seguir são compartilhados e outras pessoas podem se hospedar no mesmo apartamento. <br/>As reservas devem ser feitas para um hóspede por vez.</Subtitle>
         </div>
         <Cards>
           {availableRooms.sort(byName).filter((item:any) => item.title.slice(6, 14) == 'Coletiva').map((room: any) => (

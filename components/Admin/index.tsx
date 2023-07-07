@@ -1,6 +1,6 @@
 import { FaEdit, FaSave } from "react-icons/fa";
 import { MdOutlineCancel } from 'react-icons/md'
-import { Container, DetailsItem, DetailsRow, HeaderItem, HeaderItemSmall, Heading, Subtitle, Table, TableHeader, TableItem, TableItemSmall, TableRow, TableWrapper, Title, Wrapper } from "./AdminStyles";
+import { Container, DetailsItem, DetailsRow, HeaderItem, HeaderItemSmall, HeaderItemSmallAction, Heading, Subtitle, Table, TableHeader, TableItem, TableItemSmall, TableItemSmallAction, TableRow, TableWrapper, Title, Wrapper } from "./AdminStyles";
 import { useState } from "react";
 import { arrayRemove, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import fireDB from "@/firebase/initFirebase";
@@ -115,7 +115,7 @@ const Admin = ({ bookings, rooms, users }: any) => {
               <HeaderItemSmall>Valor Total</HeaderItemSmall>
               <HeaderItemSmall>Pagamento</HeaderItemSmall>
               <HeaderItemSmall>Status</HeaderItemSmall>
-              <HeaderItemSmall>Ação</HeaderItemSmall>
+              <HeaderItemSmallAction>Ação</HeaderItemSmallAction>
             </TableHeader>
             {bookings.sort(byDate).filter((item:any) => item.from.slice(3, 10) == selectedMonth)
             .map((booking:any) => (
@@ -128,10 +128,10 @@ const Admin = ({ bookings, rooms, users }: any) => {
                 <TableItemSmall>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(booking.amount)}</TableItemSmall>
                 <TableItemSmall>{booking.payment}</TableItemSmall>
                 <TableItemSmall>{booking.status}</TableItemSmall>
-                <TableItemSmall style={{ gap: 8 }}>
+                <TableItemSmallAction style={{ gap: 8 }}>
                   <MdOutlineCancel style={{ cursor: 'pointer' }} size={16} color={'#EC5757'} onClick={() => deleteData(booking.id, booking.roomId, booking.from, booking.to)} />
                   <FaEdit style={{ cursor: 'pointer' }} size={16} color={'#C4C4C4'} onClick={() => bookingEdit(booking)} />
-                </TableItemSmall>
+                </TableItemSmallAction>
               </TableRow>
               <DetailsRow>
                 <DetailsItem>Observações: {booking.details}</DetailsItem>

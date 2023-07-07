@@ -4,6 +4,10 @@ import styled from "styled-components";
 export const Container = styled.nav`
   background-color: #13131A;
   font-family: 'Poppins', sans-serif;
+  
+  @media print {
+    display: none;
+  }
 `
 export const Wrapper = styled.div`
   max-width: 1080px;

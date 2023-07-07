@@ -21,6 +21,10 @@ export const Heading = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 4px;
+
+  @media print {
+    display: none;
+  }
 `
 export const Title = styled.h1`
   color: #13131A;
@@ -53,7 +57,7 @@ export const Table = styled.div`
 export const TableHeader = styled.div`
   background-color: #00c2cb;
   width: 100%;
-  padding: 16px;
+  padding: 8px;
 
   display: flex;
   flex-direction: row;
@@ -63,27 +67,49 @@ export const TableHeader = styled.div`
 export const HeaderItem = styled.div`
   flex: 2;
   color: #F1F1F1;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media print {
+    font-size: 8px;
+  }
 `
 export const HeaderItemSmall = styled.div`
   flex: 1;
   color: #F1F1F1;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media print {
+    font-size: 8px;
+  }
+`
+export const HeaderItemSmallAction = styled.div`
+  flex: 1;
+  color: #F1F1F1;
+  font-size: 12px;
+  font-weight: 500;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media print {
+    display: none;
+  }
 `
 export const TableRow = styled.div`
   background-color: #F1F1F1;
   width: 100%;
-  padding: 16px 8px;
+  padding: 4px 8px;
 
   display: flex;
   flex-direction: row;
@@ -93,7 +119,7 @@ export const TableRow = styled.div`
 export const DetailsRow = styled.div`
   background-color: #F1F1F1;
   width: 100%;
-  padding: 16px 8px;
+  padding: 0px 8px;
   border-bottom: 1px solid #13131A;
 
   display: flex;
@@ -104,29 +130,55 @@ export const DetailsRow = styled.div`
 export const TableItem = styled.div`
   flex: 2;
   color: #13131A;
-  font-size: 14px;
+  font-size: 12px;
 
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+
+  @media print {
+    font-size: 8px;
+  }
 `
 export const TableItemSmall = styled.div`
   flex: 1;
   color: #13131A;
-  font-size: 14px;
+  font-size: 12px;
 
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+
+  @media print {
+    font-size: 8px;
+  }
+`
+export const TableItemSmallAction = styled.div`
+  flex: 1;
+  color: #13131A;
+  font-size: 12px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  @media print {
+    display: none;
+  }
 `
 export const DetailsItem = styled.div`
   flex: 1;
   color: #13131A;
-  font-size: 14px;
+  font-size: 12px;
 
   display: flex;
   justify-content: flex-start;
   align-items: center;
+
+  @media print {
+    font-size: 8px;
+  }
 `
