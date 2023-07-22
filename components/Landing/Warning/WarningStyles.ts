@@ -3,7 +3,7 @@ import styled from "styled-components"
 export const Container = styled.section`
   background-color: #FFF;
   font-family: 'Poppins', sans-serif;
-  padding: 24px 0;
+  padding: 24px 0 0 0;
 `
 export const Wrapper = styled.div`
   max-width: 1080px;
@@ -14,35 +14,34 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0 16px;
-  gap: 32px;
 `
-export const Heading = styled.div`
+export const Box = styled.div`
+  width: 100%;
+  background-color: #13131A;
+  color: white;
+  border-radius: 20px;
+
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  align-self: flex-start;
+  align-items: flex-start;
+  padding: 16px;
 `
 export const Title = styled.h1`
-  color: #13131A;
-  font-size: 24px;
+  color: #F6F6F6;
+  font-size: 18px;
   font-weight: 600;
   text-transform: capitalize;
-`
-export const RulesMenu = styled.ul`
-  list-style: none;
-  width: 100%;
-
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-
+  
   @media screen and (max-width: 768px) {
-    grid-template-columns: repeat(1, 1fr);
+    font-size: 16px;
   }
 `
-export const Rule = styled.li`
-  color: #44444A;
-  font-size: 16px;
-  font-weight: 500;
+export const Item = styled.li`
+  color: #F0F0F0;
+  font-size: 14px;
+  font-weight: 600;
+
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `

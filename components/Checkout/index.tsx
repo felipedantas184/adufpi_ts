@@ -14,6 +14,9 @@ const Checkout = ({ room, roomId }: any) => {
   const [userData, setUserData] = useState<any>()
   const [paymentMethod, setPaymentMethod] = useState<string>('Débito em Conta - Pendente')
   const [bookingDetails, setBookingDetails] = useState<string>()
+  const [secondGuest, setSecondGuest] = useState<string>()
+  const [bookingContact, setBookingContact] = useState<string>()
+  const [secondContact, setSecondContact] = useState<string>()
   const [loading, setLoading] = useState<boolean>(true)
   const { from, to } = router.query;
   var totaldays = moment.duration(moment(to, 'DD-MM-YYYY').diff(moment(from, 'DD-MM-YYYY'))).asDays()
@@ -30,7 +33,7 @@ const Checkout = ({ room, roomId }: any) => {
         bookingdate: moment().utcOffset('-03:00').format('DD-MM-YYYY hh:mm:ss a'),
         amount: (userData.relation === 'member') ? (room.price * totaldays) : (room.guestprice * totaldays),
         payment: paymentMethod,
-        details: bookingDetails,
+        details: `${bookingDetails} - ${bookingContact} ${(secondGuest) ? `//  ${secondGuest} - ${secondContact}` : ''}`,
         status: 'Pendente'
       }).then(function (docRef) {
         updateDoc(doc(fireDB, "rooms", roomId), {
@@ -117,7 +120,7 @@ const Checkout = ({ room, roomId }: any) => {
                 </CBox>
               </HBox>
               <CBox>
-                <select style={{fontFamily: 'Poppins', borderRadius: 8}}
+                <select style={{ fontFamily: 'Poppins', borderRadius: 8 }}
                   onChange={(e) =>
                     setPaymentMethod(e.target.value)
                   }>
@@ -128,14 +131,46 @@ const Checkout = ({ room, roomId }: any) => {
                   <option value="Espécie - Pendente">Espécie</option>
                 </select>
               </CBox>
-              <CBox>
-                <CLabel>Nome do Hóspede e Contato</CLabel>
-                <Input placeholder="João da Silva - 86999811520" maxLength={80}
-                onChange={(e) =>
-                  setBookingDetails(e.target.value)
-                }
-                value={bookingDetails} />
-              </CBox>
+              <HBox style={{ gap: 4 }} >
+                <CBox>
+                  <CLabel>Nome do Hóspede</CLabel>
+                  <Input placeholder="João da Silva" maxLength={50}
+                    onChange={(e) =>
+                      setBookingDetails(e.target.value)
+                    }
+                    value={bookingDetails} />
+                </CBox>
+                <CBox>
+                  <CLabel>Telefone</CLabel>
+                  <Input placeholder="86 99981-1520" maxLength={20} type="number"
+                    onChange={(e) =>
+                      setBookingContact(e.target.value)
+                    }
+                    value={bookingContact} />
+                </CBox>
+              </HBox>
+              {(room.capacity == 2) ? (
+                <HBox style={{ gap: 4 }} >
+                  <CBox>
+                    <CLabel>Nome do Hóspede</CLabel>
+                    <Input placeholder="João da Silva" maxLength={50}
+                      onChange={(e) =>
+                        setSecondGuest(e.target.value)
+                      }
+                      value={secondGuest} />
+                  </CBox>
+                  <CBox>
+                    <CLabel>Telefone</CLabel>
+                    <Input placeholder="86 99981-1520" maxLength={20} type="number"
+                      onChange={(e) =>
+                        setSecondContact(e.target.value)
+                      }
+                      value={secondContact} />
+                  </CBox>
+                </HBox>
+              ) : (
+                <></>
+              )}
             </BData>
             <BResume>
               <HBox>

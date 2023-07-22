@@ -142,7 +142,7 @@ export const Button = styled.button`
     box-shadow: inset 400px 0 0 0 #13131A;
   }
 `
-export const Input = styled.textarea`
+export const Input = styled.input`
   background-color: #fff;
   color: #33333A;
   font-size: 14px;

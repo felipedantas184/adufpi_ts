@@ -2,6 +2,7 @@ import List from "./List";
 import { useState } from "react";
 import moment from "moment";
 import Advices from "./Advices";
+import Warning from "./Warning";
 
 const Landing = ({ rooms }: any) => {
   const [availableRooms, setAvailableRooms] = useState<any>(rooms)
@@ -54,6 +55,7 @@ const Landing = ({ rooms }: any) => {
 
   return ( 
     <>
+      <Warning/>
       <List availableRooms={availableRooms} totaldays={totaldays} filterByDate={filterByDate} fromdate={fromdate} todate={todate}/>
       <Advices />
     </>

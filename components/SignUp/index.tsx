@@ -38,6 +38,7 @@ const SingUp = () => {
           cep: data.cep,
           relation: data.relation,
           admin: false,
+          able: true,
         })
       })
       if (auth.currentUser !== null) {
