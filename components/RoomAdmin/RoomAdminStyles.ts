@@ -182,3 +182,55 @@ export const DetailsItem = styled.div`
     font-size: 8px;
   }
 `
+
+export const Box = styled.div`
+  width: 100%;
+  color: #13131A;
+
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+`
+export const Half = styled.div`
+  background-color: #D4D4D4;
+  border-radius: 20px;
+  
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+`
+export const Group = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+`
+export const BoxTitle = styled.h3`
+  color: #13131A;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: capitalize;
+  
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
+`
+export const BoxSubtitle = styled.h3`
+  color: #13131A;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: capitalize;
+  
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
+`

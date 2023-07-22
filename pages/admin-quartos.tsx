@@ -9,17 +9,6 @@ import { useRouter } from "next/router";
 import { useEffect } from 'react'
 
 export async function getServerSideProps() {
-  const firebaseBookings = await getDocs(collection(fireDB, "bookings"));
-  const bookings: any = []
-  firebaseBookings.forEach((doc) => {
-    const obj = {
-      id: doc.id,
-      ...doc.data()
-    }
-
-    bookings.push(obj)
-  });
-
   const firebaseRooms = await getDocs(collection(fireDB, "rooms"));
   const rooms: any = []
   firebaseRooms.forEach((doc) => {
@@ -44,7 +33,6 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      bookings,
       rooms,
       users
     }
@@ -82,7 +70,7 @@ const RoomAdminPage = ({ bookings, rooms, users }: any) => {
       </Head>
       <Layout>
         {(adminPrivilege) && (
-          <RoomAdmin bookings={bookings} rooms={rooms} users={users} />
+          <RoomAdmin rooms={rooms} users={users} />
         )}
       </Layout>
     </>
