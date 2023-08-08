@@ -266,10 +266,6 @@ const RoomAdmin = ({ bookings, rooms, users }: any) => {
             </Table>
           </TableWrapper>
         )}
-        <button onClick={() => UpdateCoupleRooms()} >ADD DATA</button>
-        <button onClick={() => UpdateColetiveRooms()} >ADD DATA</button>
-        <button onClick={() => UpdateColetiveRoomsCapacity()} >ADD DATA</button>
-        <button onClick={() => UpdateUsers()} >ADD DATA</button>
       </Wrapper>
     </Container>
   );
