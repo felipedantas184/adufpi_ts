@@ -6,145 +6,30 @@ import fireDB from "@/firebase/initFirebase";
 import moment from 'moment';
 
 
-const UserAdmin = ({ bookings, rooms, users }: any) => {
-  const [selectedMonth, setSelectedMonth] = useState(moment().utcOffset('-03:00').format('DD-MM-YYYY hh:mm:ss a').slice(3, 10))
+const UserAdmin = ({ users }: any) => {
   const [editingBooking, setEditingBooking] = useState<any>()
-  const [updatePayment, setUpdatePayment] = useState<string>()
   const [updateStatus, setUpdateStatus] = useState<string>()
 
-  const onChange = (date: any, dateString: string) => {
-    setSelectedMonth(dateString)
-  };
-
-  function byDate(a: any, b: any) {
-    return new Date(a.from.split('-').reverse().join()).valueOf() - new Date(b.from.split('-').reverse().join()).valueOf(); //timestamps
-  }
-  const getRoomName = (roomId: string) => {
-    const room = rooms.filter((room: any) => room.id == roomId)
-    const roomName = (room[0].title)
-
-    return roomName
-  }
-  const getUserName = (userId: string) => {
-    const user = users.filter((user: any) => user.id == userId)
-    const userName = (user[0].name + ' ' + user[0].surname)
-
-    return userName
-  }
   async function bookingEdit(booking: any) {
     setEditingBooking(booking)
   }
-  async function updateData(bookingId: string) {
+
+  async function UpdateUsers(user: any) {
     try {
-      if (confirm("Você tem certeza de que deseja atualizar esta reserva?") == true) {
-        (updatePayment && updateStatus) ? (
-          await updateDoc(doc(fireDB, "bookings", bookingId), {
-            payment: updatePayment,
-            status: updateStatus
-          })
-        ) : (updatePayment && !updateStatus) ? (
-          await updateDoc(doc(fireDB, "bookings", bookingId), {
-            payment: updatePayment
-          })
-        ) : (!updatePayment && updateStatus) ? (
-          await updateDoc(doc(fireDB, "bookings", bookingId), {
-            status: updateStatus
-          })
-        ) : (!updatePayment && !updateStatus) ? (
-          alert('Não há nada para atualizar')
-        ) : (alert('Nada para realizar'))
-        alert("Reserva atualizada!")
-        location.reload()
-      }
-    } catch (error) {
-      alert(error)
-    }
-  }
-  async function deleteData(bookingId: string, roomId: string, bookingFrom: string, bookingTo: string) {
-    try {
-      if (confirm("Você tem certeza de que deseja cancelar esta reserva?" + roomId) == true) {
-        await deleteDoc(doc(fireDB, "bookings", bookingId)).then(function () {
-          updateDoc(doc(fireDB, "rooms", roomId), {
-            currentBookings: arrayRemove({
-              bookingId: bookingId,
-              fromdate: bookingFrom,
-              todate: bookingTo
-            })
-          })
-        })
-        alert("Reserva cancelada!")
-        location.reload()
-      }
-    } catch (error) {
-      alert(error)
-    }
-  }
-
-  async function UpdateRooms() {
-    rooms.sort(byName).filter((item: any) => item.title.slice(6, 11) == 'Casal').map(async (room: any) => {
-      try {
-        await updateDoc(doc(fireDB, "rooms", room.id), {
-          guestprice: "120",
-          price: "60",
-        })
-        console.log("atualizando")
-      } catch (error) {
-        console.log(error)
-      }
-    })
-  }
-
-  async function UpdateColetiveRooms() {
-    rooms.sort(byName).filter((item: any) => item.title.slice(6, 14) == 'Coletiva').map(async (room: any) => {
-      try {
-        await updateDoc(doc(fireDB, "rooms", room.id), {
-          guestprice: "70",
-          price: "35",
-        })
-        console.log("atualizando")
-      } catch (error) {
-        console.log(error)
-      }
-    })
-  }
-  async function UpdateColetiveRoomsCapacity() {
-    rooms.sort(byName).filter((item: any) => item.title.slice(6, 14) == 'Coletiva').map(async (room: any) => {
-      try {
-        await updateDoc(doc(fireDB, "rooms", room.id), {
-          capacity: "1",
-        })
-        console.log("atualizando")
-      } catch (error) {
-        console.log(error)
-      }
-    })
-  }
-
-  async function UpdateUsers() {
-    users.map(async (user: any) => {
-      try {
+      if (updateStatus == 'able') {
         await updateDoc(doc(fireDB, "users", user.id), {
           able: true,
         })
-        console.log("atualizando")
-      } catch (error) {
-        console.log(error)
+        alert("Usuário habilitado para realizar reservas!")
+      } else {
+        await updateDoc(doc(fireDB, "users", user.id), {
+          able: false,
+        })
+        alert("Usuário não pode realizar mais reservas!")
       }
-    })
-  }
-
-  const getTotalAmount = () => {
-    const filteredMonth = bookings.filter((item: any) => item.from.slice(3, 10) == selectedMonth)
-    const value = filteredMonth.reduce((prev: any, curr: any) => prev + curr.amount, 0)
-
-    return value
-  }
-
-  const getTotalPaidAmount = () => {
-    const filteredMonth = bookings.filter((item: any) => item.from.slice(3, 10) == selectedMonth && item.status == 'Pago')
-    const value = filteredMonth.reduce((prev: any, curr: any) => prev + curr.amount, 0)
-
-    return value
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   function byName(a: any, b: any) {
@@ -158,7 +43,7 @@ const UserAdmin = ({ bookings, rooms, users }: any) => {
       <Wrapper>
         <Heading>
           <Title>Administração</Title>
-          <Subtitle>Você está vendo as reservas referentes a {selectedMonth}</Subtitle>
+          <Subtitle>Você pode habilitar os usuários a realizar reservas!</Subtitle>
         </Heading>
         <TableWrapper>
           <Table>
@@ -177,7 +62,7 @@ const UserAdmin = ({ bookings, rooms, users }: any) => {
                   <TableItem>{user.cpf}</TableItem>
                   <TableItem>{user.email}</TableItem>
                   <TableItem>{user.phone}</TableItem>
-                  <TableItem>{user.able ? 'habilitado' : 'false'}</TableItem>
+                  <TableItem>{user.able ? 'Habilitado' : 'Restrito'}</TableItem>
                   <TableItemSmallAction style={{ gap: 8 }}>
                     <FaEdit style={{ cursor: 'pointer' }} size={16} color={'#C4C4C4'} onClick={() => bookingEdit(user)} />
                   </TableItemSmallAction>
@@ -206,25 +91,22 @@ const UserAdmin = ({ bookings, rooms, users }: any) => {
                 <TableItem>{editingBooking.email}</TableItem>
                 <TableItem>{editingBooking.phone}</TableItem>
                 <TableItem>
-                <select defaultValue={editingBooking.status}
+                  <select defaultValue={editingBooking.status}
                     onChange={(e) =>
                       setUpdateStatus(e.target.value)
                     }>
+                    <option hidden>-Selecione-</option>
                     <option value={'able'}>Habilitado</option>
-                    <option value={'no'}>Não Habilitado</option>
+                    <option value={'not'}>Restrito</option>
                   </select>
                 </TableItem>
                 <TableItemSmall style={{ justifyContent: 'space-around' }}>
-                  <FaSave style={{ cursor: 'pointer' }} size={16} color={'#02AD50'} onClick={() => updateData(editingBooking.id)} />
+                  <FaSave style={{ cursor: 'pointer' }} size={16} color={'#02AD50'} onClick={() => UpdateUsers(editingBooking)} />
                 </TableItemSmall>
               </TableRow>
             </Table>
           </TableWrapper>
         )}
-        <button onClick={() => UpdateRooms()} >ADD DATA</button>
-        <button onClick={() => UpdateColetiveRooms()} >ADD DATA</button>
-        <button onClick={() => UpdateColetiveRoomsCapacity()} >ADD DATA</button>
-        <button onClick={() => UpdateUsers()} >ADD DATA</button>
       </Wrapper>
     </Container>
   );

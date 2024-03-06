@@ -183,6 +183,7 @@ const Admin = ({ bookings, rooms, users }: any) => {
             <option value="Pendente" >Pendente</option>
           </select>
           <TableItem><Link style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8}} href={'admin-quartos'}>Alterar valor das diárias<FaArrowAltCircleRight size={16} color="#000" /></Link></TableItem>
+          <TableItem><Link style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8}} href={'admin-users'}>Habilitar usuários a realizar reservas<FaArrowAltCircleRight size={16} color="#000" /></Link></TableItem>
         </Heading>
         <TableWrapper>
           <Table>
