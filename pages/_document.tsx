@@ -30,7 +30,7 @@ export default class MyDocument extends Document {
   }
   render() {
     return (
-      <Html lang="en">
+      <Html lang="pt-BR">
         <Head>
           <meta charSet="utf-8" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />

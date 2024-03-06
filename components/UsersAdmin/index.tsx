@@ -33,8 +33,8 @@ const UserAdmin = ({ users }: any) => {
   }
 
   function byName(a: any, b: any) {
-    if (a.slug < b.slug) { return -1; }
-    if (a.slug > b.slug) { return 1; }
+    if (a.name < b.name) { return -1; }
+    if (a.name > b.name) { return 1; }
     return 0;
   }
 
