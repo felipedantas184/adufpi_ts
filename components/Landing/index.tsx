@@ -22,7 +22,11 @@ const Landing = ({ rooms }: any) => {
     settodate(datesString[1])
     if (moment.duration(moment(datesString[1], 'DD-MM-YYYY').diff(moment(datesString[0], 'DD-MM-YYYY'))).asDays() == 0) {
       settotaldays(1)
-    } else {
+    } if (moment.duration(moment(datesString[1], 'DD-MM-YYYY').diff(moment(datesString[0], 'DD-MM-YYYY'))).asDays() >= 15) {
+      settotaldays(moment.duration(moment(datesString[1], 'DD-MM-YYYY').diff(moment(datesString[0], 'DD-MM-YYYY'))).asDays())
+      alert('A hospedagem não pode ultrapassar 15 dias. Selecione outras datas!')
+    }
+    else {
       settotaldays(moment.duration(moment(datesString[1], 'DD-MM-YYYY').diff(moment(datesString[0], 'DD-MM-YYYY'))).asDays())
     }
 

@@ -141,6 +141,15 @@ export const Button = styled.button`
   &:hover, &:focus {
     box-shadow: inset 400px 0 0 0 #13131A;
   }
+
+  &:disabled {
+    background-color: #D4D4D4;
+    cursor: not-allowed;
+
+    &:hover, &:focus {
+    box-shadow: none
+    }
+  }
 `
 export const Input = styled.input`
   background-color: #fff;

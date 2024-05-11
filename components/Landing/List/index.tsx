@@ -89,9 +89,11 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
                     <FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays)}</FText>
                   ) : (<FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays)}</FText>)}
                   {(totaldays == 0) ? (
-                    <DisabledButton>Selecione as Datas</DisabledButton>
+                    <DisabledButton >Selecione as Datas</DisabledButton>
+                  ) : (totaldays >= 15) ? (
+                    <DisabledButton >Selecione novas Datas</DisabledButton>
                   ) : (userData.able == false) ? (
-                    <DisabledButton>Usuário Não Habilitado</DisabledButton>
+                    <DisabledButton >Usuário Não Habilitado</DisabledButton>
                   ) : (
                     <Button onClick={() => sendData(room)}>Reservar Agora</Button>
                   )}
@@ -129,9 +131,11 @@ const List = ({ availableRooms, totaldays, filterByDate, fromdate, todate }: any
                     <FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays)}</FText>
                   ) : (<FText>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays)}</FText>)}
                   {(totaldays == 0) ? (
-                    <DisabledButton>Selecione as Datas</DisabledButton>
+                    <DisabledButton >Selecione as Datas</DisabledButton>
+                  ) : (totaldays >= 15) ? (
+                    <DisabledButton >Selecione novas Datas</DisabledButton>
                   ) : (userData.able == false) ? (
-                    <DisabledButton>Usuário Não Habilitado</DisabledButton>
+                    <DisabledButton >Usuário Não Habilitado</DisabledButton>
                   ) : (
                     <Button onClick={() => sendData(room)}>Reservar Agora</Button>
                   )}

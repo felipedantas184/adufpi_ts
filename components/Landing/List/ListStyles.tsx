@@ -139,11 +139,7 @@ export const DisabledButton = styled.button`
   padding: 8px 16px;
   border-radius: 8px;
   
-  cursor: pointer;
+  cursor: not-allowed;
   transition: 0.5s;
   -webkit-tap-highlight-color: transparent;
-
-  &:hover, &:focus {
-    box-shadow: inset 200px 0 0 0 #13131A;
-  }
 `

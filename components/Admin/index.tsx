@@ -153,10 +153,10 @@ const Admin = ({ bookings, rooms, users }: any) => {
         moment(convertDate(booking.to)).isBetween(convertDate(datesString[0]), convertDate(datesString[1])) ||
         moment(convertDate(datesString[0])).isBetween(convertDate(booking.from), convertDate(booking.to)) ||
         moment(convertDate(datesString[1])).isBetween(convertDate(booking.from), convertDate(booking.to)) ||
-        datesString[0] == booking.fromdate ||
-        datesString[0] == booking.todate ||
-        datesString[1] == booking.fromdate ||
-        datesString[1] == booking.todate
+        datesString[0] == booking.from ||
+        datesString[0] == booking.to ||
+        datesString[1] == booking.from ||
+        datesString[1] == booking.to
       ) {
         availability = true
       }

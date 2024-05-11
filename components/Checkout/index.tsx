@@ -7,6 +7,7 @@ import { BData, Boxes, BResume, Button, CBox, CLabel, CName, Container, Cost, CT
 import { sendContactForm } from "../../lib/api";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const Checkout = ({ room, roomId }: any) => {
   const { user } = useAuth();
@@ -14,10 +15,14 @@ const Checkout = ({ room, roomId }: any) => {
   const [userData, setUserData] = useState<any>()
   const [paymentMethod, setPaymentMethod] = useState<string>('Débito em Conta - Pendente')
   const [bookingDetails, setBookingDetails] = useState<string>()
+  const [firstRelation, setFirstRelation] = useState<string>()
   const [secondGuest, setSecondGuest] = useState<string>()
+  const [secondRelation, setSecondRelation] = useState<string>()
   const [bookingContact, setBookingContact] = useState<string>()
   const [secondContact, setSecondContact] = useState<string>()
   const [loading, setLoading] = useState<boolean>(true)
+  const [contractChecked, setContractChecked] = useState<boolean>(false)
+
   const { from, to } = router.query;
   var totaldays = moment.duration(moment(to, 'DD-MM-YYYY').diff(moment(from, 'DD-MM-YYYY'))).asDays()
   if (totaldays == 0) {
@@ -31,9 +36,9 @@ const Checkout = ({ room, roomId }: any) => {
         to: to,
         roomId: roomId,
         bookingdate: moment().utcOffset('-03:00').format('DD-MM-YYYY hh:mm:ss a'),
-        amount: (userData.relation === 'member') ? (room.price * totaldays) : (room.guestprice * totaldays),
+        amount: (room.capacity == 2) ? (firstRelation === 'convidado' && secondRelation === 'convidado') ? (room.guestprice * totaldays) : (room.price * totaldays) : (firstRelation === 'convidado') ? (room.guestprice * totaldays) : (room.price * totaldays),
         payment: paymentMethod,
-        details: `${bookingDetails} - ${bookingContact} ${(secondGuest) ? `//  ${secondGuest} - ${secondContact}` : ''}`,
+        details: `${bookingDetails}, ${firstRelation} - ${bookingContact} ${(secondGuest) ? `//  ${secondGuest}, ${secondRelation} - ${secondContact}` : ''}`,
         status: 'Pendente'
       }).then(function (docRef) {
         updateDoc(doc(fireDB, "rooms", roomId), {
@@ -80,11 +85,18 @@ const Checkout = ({ room, roomId }: any) => {
       <Wrapper>
         <Heading>
           <Title>{room.title}</Title>
-          {(!loading) ? (
-            (userData.relation === 'member') ? (
-              <Cost>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price)}/diária</Cost>
-            ) : (<Cost>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice)}/diária</Cost>)
-          ) : (<></>)}
+          {(room.capacity == 2) ? (
+            (firstRelation && secondRelation) ? (
+              (firstRelation === 'convidado' && secondRelation === 'convidado') ?  <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice))}/diária</Cost> : <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price))}/diária</Cost>
+            ) : (
+              <span>...</span>
+            )
+          ) : (firstRelation) ? (
+            (firstRelation === 'convidado') ?  <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice))}/diária</Cost> : <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price))}/diária</Cost>
+          ) : (
+            <span>...</span>
+          )
+          }
         </Heading>
         <Info>
           <ImgWrap><Image src={room.imageurl} alt={room.title} fill /></ImgWrap>
@@ -133,7 +145,7 @@ const Checkout = ({ room, roomId }: any) => {
               </CBox>
               <HBox style={{ gap: 4 }} >
                 <CBox>
-                  <CLabel>Nome do Hóspede</CLabel>
+                  <CLabel>Nome do Hóspede*</CLabel>
                   <Input placeholder="João da Silva" maxLength={50}
                     onChange={(e) =>
                       setBookingDetails(e.target.value)
@@ -141,7 +153,7 @@ const Checkout = ({ room, roomId }: any) => {
                     value={bookingDetails} />
                 </CBox>
                 <CBox>
-                  <CLabel>Telefone</CLabel>
+                  <CLabel>Telefone*</CLabel>
                   <Input placeholder="86 99981-1520" maxLength={20} type="number"
                     onChange={(e) =>
                       setBookingContact(e.target.value)
@@ -149,42 +161,88 @@ const Checkout = ({ room, roomId }: any) => {
                     value={bookingContact} />
                 </CBox>
               </HBox>
+              <div style={{ display: "flex", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap: 4 }} >
+                <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                  <input type="radio" id="associado1" name="firstRelation" value="associado" onChange={(e) => setFirstRelation(e.target.value)} />
+                  <label htmlFor="associado1" style={{ fontSize: 13 }} >Associado</label>
+                </div>
+                <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                  <input type="radio" id="dependente1" name="firstRelation" value="dependente" onChange={(e) => setFirstRelation(e.target.value)} />
+                  <label htmlFor="dependente1" style={{ fontSize: 13 }} >Dependente</label>
+                </div>
+                <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                  <input type="radio" id="convidado1" name="firstRelation" value="convidado" onChange={(e) => setFirstRelation(e.target.value)} />
+                  <label htmlFor="convidado1" style={{ fontSize: 13 }} >Convidado</label>
+                </div>
+              </div>
               {(room.capacity == 2) ? (
-                <HBox style={{ gap: 4 }} >
-                  <CBox>
-                    <CLabel>Nome do Hóspede</CLabel>
-                    <Input placeholder="João da Silva" maxLength={50}
-                      onChange={(e) =>
-                        setSecondGuest(e.target.value)
-                      }
-                      value={secondGuest} />
-                  </CBox>
-                  <CBox>
-                    <CLabel>Telefone</CLabel>
-                    <Input placeholder="86 99981-1520" maxLength={20} type="number"
-                      onChange={(e) =>
-                        setSecondContact(e.target.value)
-                      }
-                      value={secondContact} />
-                  </CBox>
-                </HBox>
+                <>
+                  <HBox style={{ gap: 4 }} >
+                    <CBox>
+                      <CLabel>Nome do Hóspede*</CLabel>
+                      <Input placeholder="João da Silva" maxLength={50}
+                        onChange={(e) =>
+                          setSecondGuest(e.target.value)
+                        }
+                        value={secondGuest} />
+                    </CBox>
+                    <CBox>
+                      <CLabel>Telefone*</CLabel>
+                      <Input placeholder="86 99981-1520" maxLength={20} type="number"
+                        onChange={(e) =>
+                          setSecondContact(e.target.value)
+                        }
+                        value={secondContact} />
+                    </CBox>
+                  </HBox>
+                  <div style={{ display: "flex", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap: 4 }} >
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="associado2" name="secondRelation" value="associado" onChange={(e) => setSecondRelation(e.target.value)} />
+                      <label htmlFor="associado2" style={{ fontSize: 13 }} >Associado</label>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="dependente2" name="secondRelation" value="dependente" onChange={(e) => setSecondRelation(e.target.value)} />
+                      <label htmlFor="dependente2" style={{ fontSize: 13 }} >Dependente</label>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="convidado2" name="secondRelation" value="convidado" onChange={(e) => setSecondRelation(e.target.value)} />
+                      <label htmlFor="convidado2" style={{ fontSize: 13 }} >Convidado</label>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <></>
               )}
             </BData>
             <BResume>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                <input type="checkbox" id="contract" onClick={() => setContractChecked(!contractChecked)} />
+                <label htmlFor="contract" style={{ fontSize: 12 }}>Li e concordo com o <Link href={'/termos/contrato-de-estadia'} target="_blank"><i style={{ color: 'blueviolet' }} >contrato de estadia</i></Link></label>
+              </div>
               <HBox>
                 <CLabel style={{ alignSelf: 'flex-end', fontWeight: 600 }}>Valor</CLabel>
                 <CBox>
                   <CName style={{ textAlign: 'right' }}>{totaldays} Diárias</CName>
                   <CName style={{ textAlign: 'right', fontWeight: 600 }}>
-                    {(!loading) ? (
-                      (userData.relation === 'member') ? (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays)) : (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays))
-                    ) : (<></>)}
+                    {(room.capacity == 2) ? (
+                      (firstRelation && secondRelation) ? (
+                        (firstRelation === 'convidado' && secondRelation === 'convidado') ? (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays)) : (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays))
+                      ) : (
+                        <span>...</span>
+                      )
+                    ) : (firstRelation) ? (
+                      (firstRelation === 'convidado') ? (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays)) : (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays))
+                    ) : (
+                      <span>...</span>
+                    )}
                   </CName>
                 </CBox>
               </HBox>
-              <Button onClick={() => adddata()}>Confirmar Reserva</Button>
+              {(room.capacity == 2) ? (
+                <Button disabled={totaldays >= 15 || !contractChecked || !bookingDetails || !bookingContact || !secondGuest || !firstRelation || !secondRelation} onClick={() => adddata()}>Confirmar Reserva</Button>
+              ) : (
+                <Button disabled={totaldays >= 15 || !contractChecked || !bookingDetails || !bookingContact || !firstRelation} onClick={() => adddata()}>Confirmar Reserva</Button>
+              )}
             </BResume>
           </Boxes>
           <CName>As reservas estão sujeitas às regras contidas na página principal. Suítes coletivas podem ser ocupadas a qualquer momento por outros hóspedes.</CName>
