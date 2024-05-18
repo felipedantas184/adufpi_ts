@@ -18,8 +18,14 @@ const Checkout = ({ room, roomId }: any) => {
   const [firstRelation, setFirstRelation] = useState<string>()
   const [secondGuest, setSecondGuest] = useState<string>()
   const [secondRelation, setSecondRelation] = useState<string>()
+  const [thirdGuest, setThirdGuest] = useState<string>()
+  const [thirdRelation, setThirdRelation] = useState<string>()
+  const [fourthGuest, setFourthGuest] = useState<string>()
+  const [fourthRelation, setFourthRelation] = useState<string>()
   const [bookingContact, setBookingContact] = useState<string>()
   const [secondContact, setSecondContact] = useState<string>()
+  const [thirdContact, setthirdContact] = useState<string>()
+  const [fourthContact, setFourthContact] = useState<string>()
   const [loading, setLoading] = useState<boolean>(true)
   const [contractChecked, setContractChecked] = useState<boolean>(false)
 
@@ -36,9 +42,9 @@ const Checkout = ({ room, roomId }: any) => {
         to: to,
         roomId: roomId,
         bookingdate: moment().utcOffset('-03:00').format('DD-MM-YYYY hh:mm:ss a'),
-        amount: (room.capacity == 2) ? (firstRelation === 'convidado' && secondRelation === 'convidado') ? (room.guestprice * totaldays) : (room.price * totaldays) : (firstRelation === 'convidado') ? (room.guestprice * totaldays) : (room.price * totaldays),
+        amount: (room.capacity >= 2) ? (firstRelation === 'convidado' && secondRelation === 'convidado') ? (room.guestprice * totaldays) : (room.price * totaldays) : (firstRelation === 'convidado') ? (room.guestprice * totaldays) : (room.price * totaldays),
         payment: paymentMethod,
-        details: `${bookingDetails}, ${firstRelation} - ${bookingContact} ${(secondGuest) ? `//  ${secondGuest}, ${secondRelation} - ${secondContact}` : ''}`,
+        details: `${bookingDetails}, ${firstRelation} - ${bookingContact} ${(secondGuest) ? ` //  ${secondGuest}, ${secondRelation} - ${secondContact}` : ''} ${(thirdGuest) ? ` //  ${thirdGuest}, ${thirdContact} - ${thirdRelation}` : ''} ${(fourthGuest) ? ` //  ${fourthGuest}, ${fourthContact} - ${fourthRelation}` : ''}`,
         status: 'Pendente'
       }).then(function (docRef) {
         updateDoc(doc(fireDB, "rooms", roomId), {
@@ -145,7 +151,7 @@ const Checkout = ({ room, roomId }: any) => {
               </CBox>
               <HBox style={{ gap: 4 }} >
                 <CBox>
-                  <CLabel>Nome do Hóspede*</CLabel>
+                  <CLabel>Hóspede 1*</CLabel>
                   <Input placeholder="João da Silva" maxLength={50}
                     onChange={(e) =>
                       setBookingDetails(e.target.value)
@@ -175,11 +181,11 @@ const Checkout = ({ room, roomId }: any) => {
                   <label htmlFor="convidado1" style={{ fontSize: 13 }} >Convidado</label>
                 </div>
               </div>
-              {(room.capacity == 2) ? (
+              {(room.capacity >= 2) ? (
                 <>
                   <HBox style={{ gap: 4 }} >
                     <CBox>
-                      <CLabel>Nome do Hóspede*</CLabel>
+                      <CLabel>Hóspede 2*</CLabel>
                       <Input placeholder="João da Silva" maxLength={50}
                         onChange={(e) =>
                           setSecondGuest(e.target.value)
@@ -213,6 +219,76 @@ const Checkout = ({ room, roomId }: any) => {
               ) : (
                 <></>
               )}
+              {(room.capacity == 4) ? (
+                <>
+                  <HBox style={{ gap: 4 }} >
+                    <CBox>
+                      <CLabel>Hóspede 3</CLabel>
+                      <Input placeholder="João da Silva" maxLength={50}
+                        onChange={(e) =>
+                          setThirdGuest(e.target.value)
+                        }
+                        value={thirdGuest} />
+                    </CBox>
+                    <CBox>
+                      <CLabel>Telefone</CLabel>
+                      <Input placeholder="86 99981-1520" maxLength={20} type="number"
+                        onChange={(e) =>
+                          setthirdContact(e.target.value)
+                        }
+                        value={thirdContact} />
+                    </CBox>
+                  </HBox>
+                  <div style={{ display: "flex", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap: 4 }} >
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="associado4" name="fourthRelation" value="associado" onChange={(e) => setFourthRelation(e.target.value)} />
+                      <label htmlFor="associado4" style={{ fontSize: 13 }} >Associado</label>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="dependente4" name="fourthRelation" value="dependente" onChange={(e) => setFourthRelation(e.target.value)} />
+                      <label htmlFor="dependente4" style={{ fontSize: 13 }} >Dependente</label>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="convidado4" name="fourthRelation" value="convidado" onChange={(e) => setFourthRelation(e.target.value)} />
+                      <label htmlFor="convidado4" style={{ fontSize: 13 }} >Convidado</label>
+                    </div>
+                  </div>
+                  <HBox style={{ gap: 4 }} >
+                    <CBox>
+                      <CLabel>Hóspede 4</CLabel>
+                      <Input placeholder="João da Silva" maxLength={50}
+                        onChange={(e) =>
+                          setFourthGuest(e.target.value)
+                        }
+                        value={fourthGuest} />
+                    </CBox>
+                    <CBox>
+                      <CLabel>Telefone</CLabel>
+                      <Input placeholder="86 99981-1520" maxLength={20} type="number"
+                        onChange={(e) =>
+                          setFourthContact(e.target.value)
+                        }
+                        value={fourthContact} />
+                    </CBox>
+                  </HBox>
+                  <div style={{ display: "flex", flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap: 4 }} >
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="associado3" name="thirdRelation" value="associado" onChange={(e) => setThirdRelation(e.target.value)} />
+                      <label htmlFor="associado3" style={{ fontSize: 13 }} >Associado</label>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="dependente3" name="thirdRelation" value="dependente" onChange={(e) => setThirdRelation(e.target.value)} />
+                      <label htmlFor="dependente3" style={{ fontSize: 13 }} >Dependente</label>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: 'row', alignItems: 'center', gap: 4 }} >
+                      <input type="radio" id="convidado3" name="thirdRelation" value="convidado" onChange={(e) => setThirdRelation(e.target.value)} />
+                      <label htmlFor="convidado3" style={{ fontSize: 13 }} >Convidado</label>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
             </BData>
             <BResume>
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }} >
@@ -224,7 +300,7 @@ const Checkout = ({ room, roomId }: any) => {
                 <CBox>
                   <CName style={{ textAlign: 'right' }}>{totaldays} Diárias</CName>
                   <CName style={{ textAlign: 'right', fontWeight: 600 }}>
-                    {(room.capacity == 2) ? (
+                    {(room.capacity >= 2) ? (
                       (firstRelation && secondRelation) ? (
                         (firstRelation === 'convidado' && secondRelation === 'convidado') ? (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays)) : (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays))
                       ) : (
@@ -238,7 +314,7 @@ const Checkout = ({ room, roomId }: any) => {
                   </CName>
                 </CBox>
               </HBox>
-              {(room.capacity == 2) ? (
+              {(room.capacity >= 2) ? (
                 <Button disabled={totaldays >= 15 || !contractChecked || !bookingDetails || !bookingContact || !secondGuest || !firstRelation || !secondRelation} onClick={() => adddata()}>Confirmar Reserva</Button>
               ) : (
                 <Button disabled={totaldays >= 15 || !contractChecked || !bookingDetails || !bookingContact || !firstRelation} onClick={() => adddata()}>Confirmar Reserva</Button>
