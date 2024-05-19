@@ -15,6 +15,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0 16px;
+  gap: 16px;
 `
 export const Heading = styled.div`
   display: flex;
