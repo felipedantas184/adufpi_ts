@@ -34,8 +34,80 @@ const Checkout = ({ room, roomId }: any) => {
   if (totaldays == 0) {
     totaldays = 1
   }
+
+  const convertDate = (date: any) => {
+    const [day, month, year] = date.split('-');
+    const result = [year, month, day].join('-');
+
+    return result
+  }
+
   async function adddata() {
-    try {
+    const data = await getDoc(doc(fireDB, "rooms", roomId));
+    const validateRoom = data.data()
+
+    console.log(validateRoom)
+
+    var availability = true;
+    if (validateRoom?.currentBookings.length > 0) {
+      for (const booking of validateRoom?.currentBookings) {
+        if (
+          moment(convertDate(from)).isBetween(convertDate(booking.fromdate), convertDate(booking.todate)) ||
+          moment(convertDate(to)).isBetween(convertDate(booking.fromdate), convertDate(booking.todate)) ||
+          moment(convertDate(booking.fromdate)).isBetween(moment(convertDate(from)), moment(convertDate(to))) ||
+          moment(convertDate(booking.todate)).isBetween(moment(convertDate(from)), moment(convertDate(to))) ||
+          from == booking.fromdate ||
+          from == booking.todate ||
+          to == booking.fromdate ||
+          to == booking.todate
+        ) {
+          availability = false
+        }
+      }
+    }
+    if (availability == false) {
+      alert("RESERVA NÃO MAIS DISPONÍVEL")
+      router.push({ pathname: '/' })
+    } else {
+      try {
+        await addDoc(collection(fireDB, "bookings"), {
+          userId: user?.uid,
+          from: from,
+          to: to,
+          roomId: roomId,
+          bookingdate: moment().utcOffset('-03:00').format('DD-MM-YYYY hh:mm:ss a'),
+          amount: (room.capacity >= 2) ? (firstRelation === 'convidado' && secondRelation === 'convidado') ? (room.guestprice * totaldays) : (room.price * totaldays) : (firstRelation === 'convidado') ? (room.guestprice * totaldays) : (room.price * totaldays),
+          payment: paymentMethod,
+          details: `${bookingDetails}, ${firstRelation} - ${bookingContact} ${(secondGuest) ? ` //  ${secondGuest}, ${secondRelation} - ${secondContact}` : ''} ${(thirdGuest) ? ` //  ${thirdGuest}, ${thirdContact} - ${thirdRelation}` : ''} ${(fourthGuest) ? ` //  ${fourthGuest}, ${fourthContact} - ${fourthRelation}` : ''}`,
+          status: 'Pendente'
+        }).then(function (docRef) {
+          updateDoc(doc(fireDB, "rooms", roomId), {
+            currentBookings: arrayUnion({ fromdate: from, todate: to, bookingId: docRef.id })
+          })
+          sendContactForm({
+            name: user?.displayName,
+            email: user?.email,
+            subject: 'Reserva Realizada com Sucesso - ADUFPI',
+            from: from,
+            to: to,
+            room: room.title,
+            amount: (userData.relation === 'member') ? (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price * totaldays)) : (Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice * totaldays)),
+            bookingId: docRef.id,
+            observations: 'OS APARTAMENTOS COLETIVOS SÃO COMPARTILHADOS E UM NOVO HÓSPEDE PODE SER INCLÚIDO NO APARTAMENTO A QUALQUER MOMENTO.   a.	Não servimos café da manhã; b.	Não aceitamos pets; c.	Não nos responsabilizamos pela segurança dos veículos e objetos deixados no seu interior; d.	Estacionamento gratuito; e.	WIFI gratuito; f.	Horário do Checkin 14h00 e Checkout 12h00; g.	Favor trazer este email com a confirmação de reserva para apresentar à Portaria, principalmente se o checkin for fora do horário comercial; h.	Cancelamentos só serão aceitos com um dia de antecedência; i.	Permanência máxima de 15 dias; j.	Hospedagem permitida exclusivamente de associados, parentes em 1º grau e professores de outras IES; k.	Havendo mudança de apartamento coletivo para individual os valores serão recalculados;'
+          })
+        })
+
+        alert("Reserva feita com sucesso")
+        router.push({ pathname: '/bookings' })
+
+      } catch (error) {
+        alert(error)
+      }
+    }
+
+
+    {/**
+      try {
       await addDoc(collection(fireDB, "bookings"), {
         userId: user?.uid,
         from: from,
@@ -64,10 +136,11 @@ const Checkout = ({ room, roomId }: any) => {
       })
 
       alert("Reserva feita com sucesso")
-      router.push({ pathname: '/bookings' })
+      router.push({ pathname: '/bookings' }) 
+      
     } catch (error) {
       alert(error)
-    }
+    }*/}
   }
 
   console.log(user)
@@ -93,12 +166,12 @@ const Checkout = ({ room, roomId }: any) => {
           <Title>{room.title}</Title>
           {(room.capacity == 2) ? (
             (firstRelation && secondRelation) ? (
-              (firstRelation === 'convidado' && secondRelation === 'convidado') ?  <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice))}/diária</Cost> : <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price))}/diária</Cost>
+              (firstRelation === 'convidado' && secondRelation === 'convidado') ? <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice))}/diária</Cost> : <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price))}/diária</Cost>
             ) : (
               <span>...</span>
             )
           ) : (firstRelation) ? (
-            (firstRelation === 'convidado') ?  <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice))}/diária</Cost> : <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price))}/diária</Cost>
+            (firstRelation === 'convidado') ? <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.guestprice))}/diária</Cost> : <Cost>{(Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(room.price))}/diária</Cost>
           ) : (
             <span>...</span>
           )
