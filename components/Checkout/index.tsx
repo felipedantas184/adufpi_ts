@@ -66,7 +66,7 @@ const Checkout = ({ room, roomId }: any) => {
       }
     }
     if (availability == false) {
-      alert("RESERVA NÃO MAIS DISPONÍVEL")
+      alert("Desculpe, mas esta reserva NÃO ESTÁ MAIS DISPONÍVEL! Por favor, escolha outra suíte ou data.")
       router.push({ pathname: '/' })
     } else {
       try {
