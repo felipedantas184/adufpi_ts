@@ -77,9 +77,14 @@ const Bookings = ({ rooms }: any) => {
               from: bookingFrom,
               to: bookingTo,
               room: getRoomName(roomId),
-              amount: Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(bookingAmount),
-              bookingId: bookingId
-            })
+              amount: Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              }).format(bookingAmount),
+              bookingId: bookingId,
+              cancelledBy: user?.displayName,      // novo
+              cancelledByEmail: user?.email        // novo
+            });
           })
           alert("Reserva cancelada!")
           location.reload()

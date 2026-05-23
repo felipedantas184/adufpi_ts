@@ -4,6 +4,7 @@ import { Container, DetailsItem, DetailsRow, HeaderItem, HeaderItemSmall, Header
 import { useState } from "react";
 import { arrayRemove, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import fireDB from "@/firebase/initFirebase";
+import { useAuth } from "@/context/AuthContext";
 
 const { RangePicker } = DatePicker;
 import { DatePicker } from 'antd'
@@ -13,6 +14,8 @@ import { sendCancelationMessage } from "@/lib/api";
 import Link from "next/link";
 
 const Admin = ({ bookings, rooms, users }: any) => {
+  const { user } = useAuth();
+
   const [selectedMonth, setSelectedMonth] = useState(moment().utcOffset('-03:00').format('DD-MM-YYYY hh:mm:ss a').slice(3, 10))
   const [selectedFilter, setSelectedFilter] = useState<any>()
   const [editingBooking, setEditingBooking] = useState<any>()
@@ -113,9 +116,14 @@ const Admin = ({ bookings, rooms, users }: any) => {
             from: bookingFrom,
             to: bookingTo,
             room: getRoomName(roomId),
-            amount: Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(bookingAmount),
-            bookingId: bookingId
-          })
+            amount: Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            }).format(bookingAmount),
+            bookingId: bookingId,
+            cancelledBy: user?.displayName,      // admin logado
+            cancelledByEmail: user?.email        // e-mail do admin
+          });
         })
         alert("Reserva cancelada!")
         location.reload()
@@ -125,12 +133,12 @@ const Admin = ({ bookings, rooms, users }: any) => {
     }
   }
   const getTotalAmount = () => {
-    const value = filteredBookings.filter((selectedFilter === 'Pago') ? ((item:any) => item.status == 'Pago') : (selectedFilter === 'Pendente') ? ((item:any) => item.status == 'Pendente') : ((item:any) => (item.status == 'Pago' || item.status == "Pendente"))).reduce((prev: any, curr: any) => prev + curr.amount, 0)
+    const value = filteredBookings.filter((selectedFilter === 'Pago') ? ((item: any) => item.status == 'Pago') : (selectedFilter === 'Pendente') ? ((item: any) => item.status == 'Pendente') : ((item: any) => (item.status == 'Pago' || item.status == "Pendente"))).reduce((prev: any, curr: any) => prev + curr.amount, 0)
 
     return value
   }
   const getTotalPaidAmount = () => {
-    const paidBookings = filteredBookings.filter((selectedFilter === 'Pago') ? ((item:any) => item.status == 'Pago') : (selectedFilter === 'Pendente') ? ((item:any) => item.status == 'Pendente') : ((item:any) => (item.status == 'Pago' || item.status == "Pendente")))
+    const paidBookings = filteredBookings.filter((selectedFilter === 'Pago') ? ((item: any) => item.status == 'Pago') : (selectedFilter === 'Pendente') ? ((item: any) => item.status == 'Pendente') : ((item: any) => (item.status == 'Pago' || item.status == "Pendente")))
     const value = paidBookings.filter((item: any) => item.status == 'Pago').reduce((prev: any, curr: any) => prev + curr.amount, 0)
 
     return value
@@ -182,8 +190,8 @@ const Admin = ({ bookings, rooms, users }: any) => {
             <option value="Pago" >Pago</option>
             <option value="Pendente" >Pendente</option>
           </select>
-          <TableItem><Link style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8}} href={'admin-quartos'}>Alterar valor das diárias<FaArrowAltCircleRight size={16} color="#000" /></Link></TableItem>
-          <TableItem><Link style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8}} href={'admin-users'}>Habilitar usuários a realizar reservas<FaArrowAltCircleRight size={16} color="#000" /></Link></TableItem>
+          <TableItem><Link style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8 }} href={'admin-quartos'}>Alterar valor das diárias<FaArrowAltCircleRight size={16} color="#000" /></Link></TableItem>
+          <TableItem><Link style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8 }} href={'admin-users'}>Habilitar usuários a realizar reservas<FaArrowAltCircleRight size={16} color="#000" /></Link></TableItem>
         </Heading>
         <TableWrapper>
           <Table>
@@ -197,7 +205,7 @@ const Admin = ({ bookings, rooms, users }: any) => {
               <HeaderItemSmall>Status</HeaderItemSmall>
               <HeaderItemSmallAction>Ação</HeaderItemSmallAction>
             </TableHeader>
-            {filteredBookings.sort(byDate).filter((selectedFilter === 'Pago') ? ((item:any) => item.status == 'Pago') : (selectedFilter === 'Pendente') ? ((item:any) => item.status == 'Pendente') : ((item:any) => (item.status == 'Pago' || item.status == "Pendente"))).map((booking: any) => (
+            {filteredBookings.sort(byDate).filter((selectedFilter === 'Pago') ? ((item: any) => item.status == 'Pago') : (selectedFilter === 'Pendente') ? ((item: any) => item.status == 'Pendente') : ((item: any) => (item.status == 'Pago' || item.status == "Pendente"))).map((booking: any) => (
               <>
                 <TableRow key={booking.id} >
                   <TableItem style={{ justifyContent: 'flex-start', fontWeight: 500 }} >{getUserName(booking.userId)}</TableItem>
@@ -227,7 +235,7 @@ const Admin = ({ bookings, rooms, users }: any) => {
               <HeaderItem>Valor Total Esperado</HeaderItem>
             </TableHeader>
             <TableRow>
-              <TableItem>{filteredBookings.filter((selectedFilter === 'Pago') ? ((item:any) => item.status == 'Pago') : (selectedFilter === 'Pendente') ? ((item:any) => item.status == 'Pendente') : ((item:any) => (item.status == 'Pago' || item.status == "Pendente"))).sort(byDate).length}</TableItem>
+              <TableItem>{filteredBookings.filter((selectedFilter === 'Pago') ? ((item: any) => item.status == 'Pago') : (selectedFilter === 'Pendente') ? ((item: any) => item.status == 'Pendente') : ((item: any) => (item.status == 'Pago' || item.status == "Pendente"))).sort(byDate).length}</TableItem>
               <TableItem>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(getTotalPaidAmount())}</TableItem>
               <TableItem>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(getTotalAmount())}</TableItem>
             </TableRow>

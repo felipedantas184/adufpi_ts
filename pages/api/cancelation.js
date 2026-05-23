@@ -7,9 +7,11 @@ const CONTACT_MESSAGE_FIELDS = {
   email: "Email",
   subject: "Assunto",
   from: "Check-In",
-  to: 'Check-Out',
-  room: 'Quarto',
-  amount: 'Valor Total'
+  to: "Check-Out",
+  room: "Quarto",
+  amount: "Valor Total",
+  cancelledBy: "Cancelado por",          // novo
+  cancelledByEmail: "E-mail do responsável" // novo
 };
 
 const generateEmailContent = (data) => {
